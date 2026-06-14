@@ -1,0 +1,1629 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>সূরা আল-কাহফ লার্নিং অ্যাপ</title>
+<style>
+/* ===== TOKENS ===== */
+:root{
+  --p:#1a6b4a; --p2:#134e37; --acc:#c8a84b; --acc2:#f0d98a;
+  --bg:#f0f4f1; --card:#fff; --txt:#1c2a1e; --muted:#5a6b5c;
+  --bdr:#d0e0d4; --sh:rgba(26,107,74,.10);
+  --h1:#0f3d2a; --h2:#1a6b4a;
+  --r:14px; --tr:.2s cubic-bezier(.4,0,.2,1);
+}
+@media(prefers-color-scheme:dark){:root{
+  --bg:#0d1810; --card:#152019; --txt:#e4ede5; --muted:#7fa385;
+  --bdr:#1e3024; --sh:rgba(0,0,0,.35);
+  --h1:#071209; --h2:#0e3320;
+}}
+[data-theme=light]{
+  --bg:#f0f4f1;--card:#fff;--txt:#1c2a1e;--muted:#5a6b5c;
+  --bdr:#d0e0d4;--sh:rgba(26,107,74,.10);--h1:#0f3d2a;--h2:#1a6b4a;
+}
+[data-theme=dark]{
+  --bg:#0d1810;--card:#152019;--txt:#e4ede5;--muted:#7fa385;
+  --bdr:#1e3024;--sh:rgba(0,0,0,.35);--h1:#071209;--h2:#0e3320;
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow-x:hidden}
+
+body{
+  font-family:'Segoe UI',Arial,sans-serif;
+  background:var(--bg);
+  color:var(--txt);
+  transition:background var(--tr),color var(--tr);
+  /* Mobile-first: treat like a phone app */
+  max-width:430px;
+  margin:0 auto;
+  position:relative;
+  min-height:100vh;
+}
+
+/* ===== NAV ===== */
+nav{
+  position:sticky;top:0;z-index:99;
+  background:var(--p);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 14px;height:50px;
+  box-shadow:0 2px 10px rgba(0,0,0,.22);
+}
+.brand{display:flex;align-items:center;gap:8px;color:#fff;font-size:1.08rem;font-weight:700}
+.brand span:first-child{font-size:1.35rem}
+.tbtn{
+  display:flex;align-items:center;gap:5px;
+  border:1.5px solid rgba(255,255,255,.35);border-radius:16px;
+  background:transparent;color:#fff;font-size:.82rem;
+  padding:5px 12px;cursor:pointer;
+}
+.tbtn:active{background:rgba(255,255,255,.15)}
+
+/* ===== HERO — compact ===== */
+.hero{
+  background:linear-gradient(150deg,var(--h1) 0%,var(--h2) 100%);
+  padding:20px 16px 16px;
+  text-align:center;
+  position:relative;overflow:hidden;
+}
+.hero::before{
+  content:'';position:absolute;
+  width:200px;height:200px;border-radius:50%;
+  border:1px solid rgba(200,168,75,.15);
+  top:-70px;left:-60px;pointer-events:none;
+}
+.bismi{font-size:1.3rem;color:var(--acc);margin-bottom:5px;direction:rtl}
+.htitle{font-size:1.2rem;font-weight:800;color:#fff;margin-bottom:4px}
+.hsub{font-size:.8rem;color:rgba(255,255,255,.65);margin-bottom:10px}
+.badges{display:flex;flex-wrap:wrap;justify-content:center;gap:6px}
+.badge{
+  padding:4px 12px;border-radius:12px;font-size:.74rem;font-weight:600;border:1px solid;
+}
+.bg{background:rgba(200,168,75,.15);border-color:var(--acc);color:var(--acc2)}
+.bw{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.3);color:rgba(255,255,255,.85)}
+
+/* ===== INFO STRIP — horizontal scroll ===== */
+.info-strip{
+  display:flex;gap:8px;
+  padding:10px 14px;
+  overflow-x:auto;
+  scrollbar-width:none;
+  background:var(--card);
+  border-bottom:1px solid var(--bdr);
+}
+.info-strip::-webkit-scrollbar{display:none}
+.chip{
+  display:flex;align-items:center;gap:6px;
+  background:var(--bg);border:1px solid var(--bdr);
+  border-radius:20px;padding:6px 13px;
+  font-size:.75rem;color:var(--muted);
+  white-space:nowrap;flex-shrink:0;
+}
+.chip strong{color:var(--txt);font-size:.8rem}
+.chip .ci{font-size:1rem}
+
+/* ===== SECTION LABEL ===== */
+.sec-lbl{
+  display:flex;align-items:center;gap:7px;
+  font-size:.85rem;font-weight:700;color:var(--p);
+  padding:12px 14px 8px;
+  letter-spacing:.03em;text-transform:uppercase;
+}
+[data-theme=dark] .sec-lbl,
+@media(prefers-color-scheme:dark){.sec-lbl{color:#5dcb96}}
+.sec-lbl::after{content:'';flex:1;height:1px;background:var(--bdr)}
+
+/* ===== GRID — 4 col on mobile, fits one screen ===== */
+.grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:10px;
+  padding:0 12px 12px;
+}
+
+/* ===== CARD ===== */
+.card{
+  background:var(--card);
+  border:1px solid var(--bdr);
+  border-radius:14px;
+  padding:13px 6px 10px;
+  display:flex;flex-direction:column;
+  align-items:center;text-align:center;
+  gap:6px;cursor:pointer;
+  position:relative;
+  box-shadow:0 1px 6px var(--sh);
+  transition:transform var(--tr),box-shadow var(--tr),border-color var(--tr);
+  -webkit-tap-highlight-color:transparent;
+}
+.card::after{
+  content:'';position:absolute;
+  top:0;left:0;right:0;height:3px;
+  border-radius:14px 14px 0 0;
+  opacity:0;transition:opacity var(--tr);
+}
+.card:active{transform:scale(.96)}
+.card:hover{transform:translateY(-3px);box-shadow:0 6px 18px var(--sh);border-color:var(--p)}
+.card:hover::after{opacity:1}
+
+/* Icon bubble */
+.ico{
+  width:46px;height:46px;border-radius:12px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.55rem;flex-shrink:0;
+}
+.cn{font-size:.78rem;font-weight:700;color:var(--txt);line-height:1.2}
+.cd{font-size:.65rem;color:var(--muted);line-height:1.3;margin-top:1px}
+
+/* Accent top bar per color */
+.c1::after{background:linear-gradient(90deg,#1a6b4a,#c8a84b)}
+.c2::after{background:linear-gradient(90deg,#0e8877,#c8a84b)}
+.c3::after{background:linear-gradient(90deg,#c8a84b,#e8a020)}
+.c4::after{background:linear-gradient(90deg,#3469bd,#1a6b4a)}
+.c5::after{background:linear-gradient(90deg,#7850b4,#3469bd)}
+.c6::after{background:linear-gradient(90deg,#be3c3c,#c8a84b)}
+.c7::after{background:linear-gradient(90deg,#dc8c1e,#c8a84b)}
+.c8::after{background:linear-gradient(90deg,#3f51b5,#7850b4)}
+.c9::after{background:linear-gradient(90deg,#1a6b4a,#dc8c1e)}
+
+/* Icon bg colors */
+.i1{background:rgba(26,107,74,.12)}
+.i2{background:rgba(14,136,119,.12)}
+.i3{background:rgba(200,168,75,.14)}
+.i4{background:rgba(52,105,189,.12)}
+.i5{background:rgba(120,80,180,.12)}
+.i6{background:rgba(190,60,60,.12)}
+.i7{background:rgba(220,140,30,.12)}
+.i8{background:rgba(63,81,181,.12)}
+.i9{background:rgba(220,140,30,.12)}
+
+/* SOON tag */
+.soon{
+  position:absolute;top:5px;right:5px;
+  font-size:.5rem;font-weight:700;
+  padding:1px 5px;border-radius:4px;
+  background:var(--acc);color:#3a2600;
+}
+
+/* ===== FOOTER ===== */
+footer{
+  text-align:center;padding:12px 14px 16px;
+  border-top:1px solid var(--bdr);
+  font-size:.72rem;color:var(--muted);line-height:1.8;
+}
+footer strong{color:var(--p)}
+
+/* ===== Dark mode sec-lbl fix ===== */
+@media(prefers-color-scheme:dark){.sec-lbl{color:#5dcb96}}
+[data-theme=dark] .sec-lbl{color:#5dcb96}
+
+/* ===== Desktop: wider layout ===== */
+@media(min-width:431px){
+  body{max-width:100%;border-left:none}
+  .grid{grid-template-columns:repeat(4,1fr);max-width:800px;margin:0 auto}
+  .info-strip{max-width:800px;margin:0 auto}
+  .sec-lbl{max-width:800px;margin:0 auto;padding:10px 20px 6px}
+  footer{max-width:800px;margin:0 auto}
+  nav .brand{font-size:1rem}
+  .hero{padding:20px 20px 18px}
+  .bismi{font-size:1.3rem}
+  .htitle{font-size:1.15rem}
+}
+
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+
+/* ===== PAGE VIEWS ===== */
+.page{display:none;animation:fadeIn .25s ease}
+.page.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+.page-nav{
+  position:sticky;top:0;z-index:99;
+  background:var(--p);
+  display:flex;align-items:center;gap:10px;
+  padding:0 14px;height:50px;
+  box-shadow:0 2px 10px rgba(0,0,0,.22);
+}
+.back-btn{
+  display:flex;align-items:center;gap:4px;
+  background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.3);
+  border-radius:14px;color:#fff;font-size:.75rem;font-weight:600;
+  padding:5px 11px;cursor:pointer;-webkit-tap-highlight-color:transparent;
+}
+.back-btn:active{background:rgba(255,255,255,.25)}
+.page-title{color:#fff;font-size:.95rem;font-weight:700}
+
+.content{padding:14px 14px 24px;max-width:800px;margin:0 auto}
+
+.cblock{
+  background:var(--card);border:1px solid var(--bdr);
+  border-radius:var(--r);padding:14px 14px;margin-bottom:12px;
+  box-shadow:0 1px 6px var(--sh);
+}
+.cblock h3{
+  font-size:.85rem;color:var(--p);margin-bottom:8px;
+  display:flex;align-items:center;gap:7px;
+}
+[data-theme=dark] .cblock h3{color:#5dcb96}
+@media(prefers-color-scheme:dark){.cblock h3{color:#5dcb96}}
+.cblock p{font-size:.8rem;line-height:1.85;color:var(--txt);margin-bottom:8px}
+.cblock p:last-child{margin-bottom:0}
+.cblock ul{padding-right:18px;margin:6px 0}
+.cblock li{font-size:.8rem;line-height:1.8;color:var(--txt);margin-bottom:5px}
+
+.q-card{
+  background:var(--bg);border:1px solid var(--bdr);
+  border-radius:10px;padding:10px 12px;margin-bottom:8px;
+  border-right:3px solid var(--acc);
+}
+.q-card .qn{font-size:.78rem;font-weight:700;color:var(--p);margin-bottom:3px}
+[data-theme=dark] .q-card .qn{color:#5dcb96}
+@media(prefers-color-scheme:dark){.q-card .qn{color:#5dcb96}}
+.q-card .qd{font-size:.75rem;color:var(--muted);line-height:1.7}
+
+.t-item{display:flex;gap:10px;margin-bottom:14px;align-items:flex-start}
+.t-dot{
+  width:30px;height:30px;border-radius:50%;
+  background:linear-gradient(135deg,var(--p),var(--h2));
+  display:flex;align-items:center;justify-content:center;
+  font-size:.9rem;flex-shrink:0;color:#fff;
+  box-shadow:0 2px 6px var(--sh);
+}
+.t-body{flex:1}
+.t-body h4{font-size:.8rem;color:var(--txt);margin-bottom:2px;font-weight:700}
+.t-body p{font-size:.75rem;color:var(--muted);line-height:1.7}
+
+.tag-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.tagx{
+  font-size:.65rem;font-weight:600;padding:3px 10px;border-radius:12px;
+  background:rgba(26,107,74,.1);color:var(--p);border:1px solid var(--bdr);
+}
+[data-theme=dark] .tagx{color:#5dcb96}
+@media(prefers-color-scheme:dark){.tagx{color:#5dcb96}}
+
+.note{
+  background:rgba(200,168,75,.1);border:1px solid var(--acc);
+  border-radius:10px;padding:10px 12px;font-size:.75rem;
+  color:var(--txt);line-height:1.8;margin-top:4px;
+}
+.note b{color:var(--acc)}
+
+/* ===== LESSON CARDS ===== */
+.lgrid{display:grid;grid-template-columns:1fr;gap:12px}
+@media(min-width:431px){.lgrid{grid-template-columns:1fr 1fr}}
+.lcard{
+  background:var(--card);border:1px solid var(--bdr);
+  border-radius:var(--r);padding:14px;
+  box-shadow:0 1px 6px var(--sh);
+  border-top:3px solid var(--p);
+}
+.lcard .lh{display:flex;align-items:center;gap:9px;margin-bottom:8px}
+.lcard .li{
+  width:38px;height:38px;border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.2rem;flex-shrink:0;background:rgba(26,107,74,.12);
+}
+.lcard .lt{font-size:.85rem;font-weight:700;color:var(--txt)}
+.lcard .lsub{font-size:.65rem;color:var(--muted)}
+.lcard p{font-size:.78rem;line-height:1.8;color:var(--txt);margin-bottom:8px}
+.lcard .real{
+  background:rgba(200,168,75,.1);border-right:3px solid var(--acc);
+  border-radius:8px;padding:8px 10px;font-size:.74rem;
+  line-height:1.8;color:var(--txt);
+}
+.lcard .real b{color:var(--acc);display:block;margin-bottom:2px;font-size:.7rem}
+.l1{border-top-color:#1a6b4a}
+.l2{border-top-color:#c8a84b}
+.l3{border-top-color:#3469bd}
+.l4{border-top-color:#be3c3c}
+.l1 .li{background:rgba(26,107,74,.12)}
+.l2 .li{background:rgba(200,168,75,.14)}
+.l3 .li{background:rgba(52,105,189,.12)}
+.l4 .li{background:rgba(190,60,60,.12)}
+
+/* ===== STORY CARDS (expandable) ===== */
+.scard{
+  background:var(--card);border:1px solid var(--bdr);
+  border-radius:var(--r);margin-bottom:12px;overflow:hidden;
+  box-shadow:0 1px 6px var(--sh);border-top:3px solid var(--p);
+}
+.s1{border-top-color:#1a6b4a}
+.s2{border-top-color:#c8a84b}
+.s3{border-top-color:#3469bd}
+.s4{border-top-color:#be3c3c}
+.shead{
+  display:flex;align-items:center;gap:10px;padding:13px 14px;
+  cursor:pointer;-webkit-tap-highlight-color:transparent;
+  justify-content:space-between;
+}
+.shead .si{
+  width:40px;height:40px;border-radius:10px;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;font-size:1.25rem;
+}
+.s1 .si{background:rgba(26,107,74,.12)}
+.s2 .si{background:rgba(200,168,75,.14)}
+.s3 .si{background:rgba(52,105,189,.12)}
+.s4 .si{background:rgba(190,60,60,.12)}
+.shead .stitle{flex:1}
+.shead .stitle .stn{font-size:.85rem;font-weight:700;color:var(--txt)}
+.shead .stitle .std{font-size:.68rem;color:var(--muted);margin-top:1px}
+.chev{font-size:.85rem;color:var(--muted);transition:transform var(--tr);flex-shrink:0}
+.scard.open .chev{transform:rotate(180deg)}
+
+.sbody{
+  max-height:0;overflow:hidden;
+  transition:max-height .35s ease;
+}
+.scard.open .sbody{max-height:3000px}
+.sbody-in{padding:0 14px 14px;border-top:1px solid var(--bdr)}
+.sbody-in p{font-size:.78rem;line-height:1.85;color:var(--txt);margin:10px 0 8px}
+.sbody-in .stage{
+  font-size:.7rem;font-weight:700;color:var(--p);
+  margin-top:10px;margin-bottom:4px;display:flex;align-items:center;gap:5px;
+}
+[data-theme=dark] .sbody-in .stage{color:#5dcb96}
+@media(prefers-color-scheme:dark){.sbody-in .stage{color:#5dcb96}}
+
+/* ===== HADITH CARDS ===== */
+.hcard{
+  background:var(--card);border:1px solid var(--bdr);
+  border-radius:var(--r);padding:14px;margin-bottom:12px;
+  box-shadow:0 1px 6px var(--sh);border-top:3px solid var(--acc);
+}
+.hcard .htop{display:flex;align-items:flex-start;gap:10px;margin-bottom:8px}
+.hcard .hi{
+  width:38px;height:38px;border-radius:10px;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.2rem;background:rgba(200,168,75,.14);
+}
+.hcard .ht{font-size:.85rem;font-weight:700;color:var(--txt);margin-bottom:2px}
+.hcard .hsub{font-size:.68rem;color:var(--muted)}
+.htext{
+  font-size:.8rem;line-height:1.9;color:var(--txt);
+  background:var(--bg);border-right:3px solid var(--acc);
+  border-radius:8px;padding:10px 12px;margin:8px 0;
+}
+.hsrc{
+  display:inline-flex;align-items:center;gap:5px;
+  font-size:.65rem;font-weight:700;color:var(--p);
+  background:rgba(26,107,74,.1);border-radius:10px;
+  padding:3px 10px;margin-top:2px;
+}
+[data-theme=dark] .hsrc{color:#5dcb96;background:rgba(93,203,150,.1)}
+@media(prefers-color-scheme:dark){.hsrc{color:#5dcb96;background:rgba(93,203,150,.1)}}
+.hcard .expl{font-size:.78rem;line-height:1.85;color:var(--txt);margin-top:6px}
+
+/* ===== QUIZ ===== */
+.qz-top{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:10px 14px;background:var(--card);border-bottom:1px solid var(--bdr);
+}
+.qz-prog{font-size:.7rem;color:var(--muted);font-weight:700}
+.qz-bar{
+  height:6px;background:var(--bg);border-radius:4px;overflow:hidden;
+  margin:0 14px 10px;
+}
+.qz-bar-in{height:100%;background:linear-gradient(90deg,var(--p),var(--acc));border-radius:4px;transition:width .3s ease}
+.qz-score{font-size:.7rem;color:var(--acc);font-weight:700}
+
+.qz-card{
+  background:var(--card);border:1px solid var(--bdr);
+  border-radius:var(--r);padding:16px 14px;margin-bottom:14px;
+  box-shadow:0 1px 6px var(--sh);
+}
+.qz-q{font-size:.88rem;font-weight:700;color:var(--txt);line-height:1.7;margin-bottom:14px}
+.qz-opt{
+  display:flex;align-items:center;gap:10px;
+  border:1.5px solid var(--bdr);border-radius:10px;
+  padding:11px 12px;margin-bottom:9px;font-size:.8rem;color:var(--txt);
+  cursor:pointer;-webkit-tap-highlight-color:transparent;
+  transition:border-color var(--tr),background var(--tr);
+}
+.qz-opt:active{transform:scale(.99)}
+.qz-opt .qmk{
+  width:22px;height:22px;border-radius:50%;border:1.5px solid var(--bdr);
+  display:flex;align-items:center;justify-content:center;
+  font-size:.65rem;font-weight:700;color:var(--muted);flex-shrink:0;
+}
+.qz-opt.correct{border-color:#1a6b4a;background:rgba(26,107,74,.08)}
+.qz-opt.correct .qmk{background:#1a6b4a;color:#fff;border-color:#1a6b4a}
+.qz-opt.wrong{border-color:#be3c3c;background:rgba(190,60,60,.08)}
+.qz-opt.wrong .qmk{background:#be3c3c;color:#fff;border-color:#be3c3c}
+.qz-opt.disabled{cursor:default}
+
+.qz-next{
+  display:block;width:100%;margin-top:6px;
+  background:var(--p);color:#fff;border:none;border-radius:10px;
+  padding:11px;font-size:.82rem;font-weight:700;cursor:pointer;
+  opacity:0;pointer-events:none;transition:opacity var(--tr);
+}
+.qz-next.show{opacity:1;pointer-events:auto}
+
+/* ===== RESULT ===== */
+.res-wrap{padding:20px 14px 30px;max-width:800px;margin:0 auto;text-align:center}
+.res-circle{
+  width:130px;height:130px;border-radius:50%;
+  margin:10px auto 14px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  background:linear-gradient(135deg,var(--h1),var(--h2));
+  box-shadow:0 6px 20px var(--sh);color:#fff;
+}
+.res-circle .rscore{font-size:1.9rem;font-weight:800}
+.res-circle .rtotal{font-size:.75rem;opacity:.8}
+.res-rank{
+  display:inline-flex;align-items:center;gap:8px;
+  background:rgba(200,168,75,.12);border:1px solid var(--acc);
+  border-radius:20px;padding:8px 18px;margin:8px 0 16px;
+  font-size:.95rem;font-weight:700;color:var(--txt);
+}
+.res-msg{font-size:.8rem;color:var(--muted);line-height:1.8;max-width:420px;margin:0 auto 18px}
+.res-btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.res-btn{
+  border-radius:10px;padding:11px 22px;font-size:.82rem;font-weight:700;
+  cursor:pointer;border:1.5px solid var(--p);
+}
+.res-btn.primary{background:var(--p);color:#fff}
+.res-btn.ghost{background:transparent;color:var(--p)}
+[data-theme=dark] .res-btn.ghost{color:#5dcb96;border-color:#5dcb96}
+@media(prefers-color-scheme:dark){.res-btn.ghost{color:#5dcb96;border-color:#5dcb96}}
+
+/* ===== SHARE CARD ===== */
+.shr-preview-wrap{
+  display:flex;justify-content:center;margin-bottom:14px;
+}
+#shrCanvas{
+  width:100%;max-width:380px;aspect-ratio:1/1;border-radius:14px;
+  box-shadow:0 4px 18px var(--sh);display:block;
+}
+.shr-tabs{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;margin-bottom:10px;scrollbar-width:none}
+.shr-tabs::-webkit-scrollbar{display:none}
+.shr-tab{
+  flex-shrink:0;font-size:.7rem;font-weight:700;color:var(--muted);
+  background:var(--card);border:1px solid var(--bdr);border-radius:14px;
+  padding:6px 13px;cursor:pointer;-webkit-tap-highlight-color:transparent;
+}
+.shr-tab.active{background:var(--p);color:#fff;border-color:var(--p)}
+
+.shr-quote-list{max-height:none}
+.shr-q-item{
+  background:var(--card);border:1.5px solid var(--bdr);border-radius:10px;
+  padding:10px 12px;margin-bottom:8px;cursor:pointer;
+  -webkit-tap-highlight-color:transparent;transition:border-color var(--tr);
+}
+.shr-q-item.sel{border-color:var(--p);background:rgba(26,107,74,.06)}
+[data-theme=dark] .shr-q-item.sel{background:rgba(93,203,150,.08)}
+@media(prefers-color-scheme:dark){.shr-q-item.sel{background:rgba(93,203,150,.08)}}
+.shr-q-item .qar{font-size:.78rem;color:var(--p);direction:rtl;margin-bottom:4px;line-height:1.8}
+[data-theme=dark] .shr-q-item .qar{color:#5dcb96}
+@media(prefers-color-scheme:dark){.shr-q-item .qar{color:#5dcb96}}
+.shr-q-item .qbn{font-size:.75rem;color:var(--txt);line-height:1.7}
+.shr-q-item .qref{font-size:.64rem;color:var(--muted);margin-top:3px}
+
+.shr-bg-row{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;margin-bottom:12px;scrollbar-width:none}
+.shr-bg-row::-webkit-scrollbar{display:none}
+.shr-bg-opt{
+  flex-shrink:0;width:54px;height:54px;border-radius:10px;cursor:pointer;
+  border:2px solid transparent;-webkit-tap-highlight-color:transparent;
+  background-size:cover;background-position:center;
+}
+.shr-bg-opt.sel{border-color:var(--acc)}
+
+.shr-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
+.shr-btn{
+  flex:1;min-width:110px;display:flex;align-items:center;justify-content:center;gap:6px;
+  border-radius:10px;padding:11px 10px;font-size:.78rem;font-weight:700;
+  cursor:pointer;border:none;color:#fff;-webkit-tap-highlight-color:transparent;
+}
+.shr-btn.fb{background:#1877f2}
+.shr-btn.wa{background:#25d366}
+.shr-btn.dl{background:var(--p)}
+</style>
+</head>
+<body>
+
+<div id="home" class="page active">
+
+<!-- NAV -->
+<nav>
+  <div class="brand">
+    <span>📖</span>
+    <span>সূরা আল-কাহফ</span>
+  </div>
+  <button class="tbtn" id="tbtn" onclick="cycleTheme()">
+    <span id="ticon">🌓</span>
+    <span id="tlbl">অটো</span>
+  </button>
+</nav>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="bismi">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</div>
+  <div class="htitle">সূরা আল-কাহফ লার্নিং অ্যাপ</div>
+  <div class="hsub">পবিত্র কুরআনের ১৮তম সূরা · মারেফুল কুরআন ভিত্তিক</div>
+  <div class="badges">
+    <span class="badge bg">১১০ আয়াত</span>
+    <span class="badge bw">মাক্কি সূরা</span>
+    <span class="badge bg">পারা ১৫–১৬</span>
+    <span class="badge bw">১২ রুকু</span>
+  </div>
+</header>
+
+<!-- INFO STRIP -->
+<div class="info-strip">
+  <div class="chip"><span class="ci">🕌</span><div><strong>মাক্কি</strong> সূরা</div></div>
+  <div class="chip"><span class="ci">📝</span><div><strong>১১০</strong> আয়াত</div></div>
+  <div class="chip"><span class="ci">📅</span><div><strong>জুমার</strong> আমল</div></div>
+  <div class="chip"><span class="ci">🛡️</span><div><strong>দাজ্জাল</strong> থেকে রক্ষা</div></div>
+  <div class="chip"><span class="ci">💡</span><div><strong>৪টি</strong> মূল ঘটনা</div></div>
+</div>
+
+<!-- GRID LABEL -->
+<div class="sec-lbl">🗂️ সকল মডিউল</div>
+
+<!-- MODULE GRID — 4 columns, 2 rows = 8 cards on one screen -->
+<div class="grid">
+
+  <div class="card c1" onclick="goTo('surah')" tabindex="0" role="button" aria-label="সূরা পড়া">
+    <div class="ico i1">📖</div>
+    <div class="cn">সূরা পড়া</div>
+    <div class="cd">আরবি ও বাংলা</div>
+  </div>
+
+  <div class="card c2" onclick="goTo('tafsir')" tabindex="0" role="button" aria-label="তাফসির">
+    <div class="ico i2">📚</div>
+    <div class="cn">তাফসির</div>
+    <div class="cd">মারেফুল কুরআন</div>
+  </div>
+
+  <div class="card c3" onclick="goTo('shane')" tabindex="0" role="button" aria-label="শানে নুজুল">
+    <div class="ico i3">🕰️</div>
+    <div class="cn">শানে নুজুল</div>
+    <div class="cd">নাযিলের কারণ</div>
+  </div>
+
+  <div class="card c4" onclick="goTo('period')" tabindex="0" role="button" aria-label="নাজিলের সময়কাল">
+    <div class="ico i4">⏳</div>
+    <div class="cn">সময়কাল</div>
+    <div class="cd">মক্কি যুগ</div>
+  </div>
+
+  <div class="card c5" onclick="goTo('lessons')" tabindex="0" role="button" aria-label="শিক্ষা">
+    <div class="ico i5">🧠</div>
+    <div class="cn">শিক্ষা</div>
+    <div class="cd">৪ পরীক্ষা</div>
+  </div>
+
+  <div class="card c6" onclick="goTo('stories')" tabindex="0" role="button" aria-label="বিভিন্ন ঘটনা">
+    <div class="ico i6">📜</div>
+    <div class="cn">ঘটনাসমূহ</div>
+    <div class="cd">৪টি কাহিনি</div>
+  </div>
+
+  <div class="card c7" onclick="goTo('fazilat')" tabindex="0" role="button" aria-label="ফজিলত">
+    <div class="ico i7">⭐</div>
+    <div class="cn">ফজিলত</div>
+    <div class="cd">হাদিস ভিত্তিক</div>
+  </div>
+
+  <div class="card c8" onclick="goTo('quiz')" tabindex="0" role="button" aria-label="কুইজ">
+    <div class="ico i8">🧪</div>
+    <div class="cn">কুইজ</div>
+    <div class="cd">MCQ স্কোর</div>
+  </div>
+
+  <div class="card c9" onclick="goTo('share')" tabindex="0" role="button" aria-label="শেয়ার কার্ড">
+    <div class="ico i9">🖼️</div>
+    <div class="cn">শেয়ার কার্ড</div>
+    <div class="cd">আয়াত শেয়ার</div>
+  </div>
+
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div>তথ্যের উৎস: <strong>মারেফুল কুরআন</strong> — মুফতি মুহাম্মদ শফী (রহ.)</div>
+  <div>সূরা আল-কাহফ লার্নিং অ্যাপ · ইসলামী জ্ঞানচর্চার জন্য</div>
+</footer>
+
+</div><!-- /home -->
+
+<!-- ===== PAGE: শানে নুজুল ===== -->
+<div id="shane" class="page">
+  <div class="page-nav">
+    <button class="back-btn" onclick="goHome()">← হোম</button>
+    <span class="page-title">🕰️ শানে নুজুল / প্রেক্ষাপট</span>
+  </div>
+  <div class="content">
+
+    <div class="cblock">
+      <h3>📜 সূরা নাযিলের কারণ</h3>
+      <p>মক্কার মুশরিকরা যখন দেখল যে নবী মুহাম্মদ (ﷺ)-এর দাওয়াত দিন দিন শক্তিশালী হচ্ছে, তখন তারা ইহুদি পণ্ডিতদের পরামর্শে রাসূল (ﷺ)-কে এমন কিছু কঠিন প্রশ্ন করার সিদ্ধান্ত নিল, যার উত্তর সাধারণ মানুষের জানা সম্ভব নয়। তাদের ধারণা ছিল, যদি তিনি উত্তর দিতে না পারেন, তবে তার নবুওতের দাবি মিথ্যা প্রমাণিত হবে।</p>
+      <p>আল্লাহ তাআলা এই তিনটি প্রশ্নের জবাবে সূরা আল-কাহফ নাযিল করেন, যেখানে তিনটি ঐতিহাসিক ঘটনার মাধ্যমে উত্তর দেওয়া হয় — যা একসাথে প্রমাণ করে এই কুরআন আল্লাহর পক্ষ থেকেই আসা ওহী।</p>
+    </div>
+
+    <div class="cblock">
+      <h3>❓ কুরাইশদের তিনটি প্রশ্ন</h3>
+
+      <div class="q-card">
+        <div class="qn">১. একদল যুবকের ঘটনা (আসহাবে কাহফ)</div>
+        <div class="qd">গুহাবাসী কয়েকজন যুবক কারা ছিল এবং তাদের সাথে কী ঘটেছিল?</div>
+      </div>
+
+      <div class="q-card">
+        <div class="qn">২. খিজির (আ.) সম্পর্কিত প্রশ্ন</div>
+        <div class="qd">এক রহস্যময় ব্যক্তি (খিজির) কে ছিলেন এবং মূসা (আ.)-এর সাথে তার কী ঘটনা ঘটেছিল?</div>
+      </div>
+
+      <div class="q-card">
+        <div class="qn">৩. যুলকারনাইনের ঘটনা</div>
+        <div class="qd">পূর্ব ও পশ্চিম জয়কারী শাসক যুলকারনাইন কে ছিলেন এবং তিনি কীভাবে একটি জাতিকে প্রতিরোধ-প্রাচীর তৈরিতে সাহায্য করেছিলেন?</div>
+      </div>
+
+      <div class="note"><b>উল্লেখ্য:</b> এই তথ্যগুলো ইহুদি পণ্ডিতদের কাছে ছিল, যা সাধারণভাবে মক্কার অশিক্ষিত পরিবেশে কারো জানার কথা ছিল না। আল্লাহ এই তিনটি ঘটনার পূর্ণ ও নির্ভুল বিবরণ দিয়ে কুরআনের সত্যতা প্রতিষ্ঠা করেন।</div>
+    </div>
+
+    <div class="cblock">
+      <h3>🏛️ ঐতিহাসিক প্রেক্ষাপট</h3>
+      <p>এই ঘটনা ঘটেছিল মক্কী জীবনের কঠিন সময়ে, যখন মুসলিমরা মুশরিকদের অত্যাচার ও বিদ্রূপের শিকার হচ্ছিলেন। কুরাইশরা ইহুদি পণ্ডিতদের কাছে গিয়ে এমন প্রশ্ন খুঁজে এনেছিল যা তাদের ধারণায় নবুওতের দাবিকে মিথ্যা প্রমাণ করবে।</p>
+      <p>তাফসিরে মারেফুল কুরআন অনুযায়ী, রাসূল (ﷺ) উত্তর দিতে কিছুটা বিলম্ব করেছিলেন, কারণ তিনি প্রথমে ওয়াদা করেননি যে "ইনশাআল্লাহ" বলে উত্তর দেবেন। এ থেকে শিক্ষা পাওয়া যায় যে, ভবিষ্যতের কোনো কাজের প্রতিশ্রুতি দিতে গেলে "ইনশাআল্লাহ" বলা জরুরি।</p>
+      <div class="tag-row">
+        <span class="tagx">মক্কী জীবন</span>
+        <span class="tagx">ইহুদি পণ্ডিত</span>
+        <span class="tagx">কুরাইশের ষড়যন্ত্র</span>
+        <span class="tagx">আসহাবে কাহফ</span>
+      </div>
+    </div>
+
+    <div class="cblock">
+      <h3>💬 সহজ বাংলা ব্যাখ্যা</h3>
+      <p>সহজভাবে বলতে গেলে — মক্কার কাফেররা নবী (ﷺ)-কে পরীক্ষা করতে চাইল। তারা ভাবল, এমন প্রশ্ন করব যার উত্তর কোনো সাধারণ মানুষ জানে না। কিন্তু আল্লাহ তাআলা পুরো একটি সূরা নাযিল করে শুধু সঠিক উত্তরই দিলেন না, বরং তার সাথে গুরুত্বপূর্ণ শিক্ষা ও সতর্কবার্তাও যুক্ত করে দিলেন — যেমন দুনিয়ার মোহ থেকে সাবধান থাকা, আল্লাহর উপর ভরসা রাখা এবং দাজ্জালের ফিতনা থেকে রক্ষার উপায়।</p>
+      <p>এভাবে সূরা আল-কাহফ একদিকে কুরাইশদের চ্যালেঞ্জের জবাব দেয়, আর অন্যদিকে কিয়ামত পর্যন্ত সকল মুসলিমের জন্য জীবন্ত শিক্ষা হয়ে থাকে।</p>
+    </div>
+
+  </div>
+</div>
+
+<!-- ===== PAGE: নাজিলের সময়কাল ===== -->
+<div id="period" class="page">
+  <div class="page-nav">
+    <button class="back-btn" onclick="goHome()">← হোম</button>
+    <span class="page-title">⏳ নাজিলের সময়কাল</span>
+  </div>
+  <div class="content">
+
+    <div class="cblock">
+      <h3>🕌 মাক্কী সূরা</h3>
+      <p>সূরা আল-কাহফ একটি সম্পূর্ণ মাক্কী সূরা, অর্থাৎ এটি রাসূলুল্লাহ (ﷺ)-এর মদিনায় হিজরতের পূর্বে মক্কায় নাযিল হয়েছিল। এটি পবিত্র কুরআনের ১৮তম সূরা এবং এতে রয়েছে ১১০টি আয়াত, ১২টি রুকু, যা ১৫ ও ১৬ নং পারায় অবস্থিত।</p>
+      <div class="tag-row">
+        <span class="tagx">মাক্কী সূরা</span>
+        <span class="tagx">১১০ আয়াত</span>
+        <span class="tagx">১২ রুকু</span>
+        <span class="tagx">পারা ১৫–১৬</span>
+      </div>
+    </div>
+
+    <div class="cblock">
+      <h3>📅 নাযিলের সময়কাল</h3>
+      <p>সূরা আল-কাহফ নাযিল হয়েছিল মক্কী জীবনের মধ্য পর্যায়ে, যখন ইসলামের দাওয়াত ছড়িয়ে পড়তে শুরু করেছিল এবং কুরাইশ নেতারা এর প্রভাব বুঝতে পেরে তা প্রতিরোধের নতুন নতুন উপায় খুঁজছিল। এ সময় মুশরিকরা সরাসরি শক্তি প্রয়োগের পাশাপাশি বুদ্ধিবৃত্তিক চ্যালেঞ্জের আশ্রয় নিতে শুরু করে — যার একটি বড় উদাহরণ এই সূরা নাযিলের প্রেক্ষাপট।</p>
+    </div>
+
+    <div class="cblock">
+      <h3>🧭 তখনকার পরিস্থিতি — সময়রেখা</h3>
+
+      <div class="t-item">
+        <div class="t-dot">📿</div>
+        <div class="t-body">
+          <h4>দাওয়াতের সম্প্রসারণ</h4>
+          <p>নবুওতের প্রাথমিক বছর পার হওয়ার পর ইসলামের দাওয়াত মক্কার বিভিন্ন গোত্রে ছড়িয়ে পড়ছিল, এবং নতুন নতুন মানুষ ইসলাম গ্রহণ করছিলেন।</p>
+        </div>
+      </div>
+
+      <div class="t-item">
+        <div class="t-dot">⚔️</div>
+        <div class="t-body">
+          <h4>মুশরিকদের অত্যাচার বৃদ্ধি</h4>
+          <p>কুরাইশ নেতারা মুসলিমদের উপর সামাজিক বয়কট, উপহাস ও শারীরিক নির্যাতন বাড়িয়ে দিয়েছিল, যাতে দাওয়াতের গতি থামানো যায়।</p>
+        </div>
+      </div>
+
+      <div class="t-item">
+        <div class="t-dot">🧠</div>
+        <div class="t-body">
+          <h4>বুদ্ধিবৃত্তিক চ্যালেঞ্জ</h4>
+          <p>শক্তি প্রয়োগে ব্যর্থ হয়ে কুরাইশরা ইহুদি পণ্ডিতদের সহায়তায় কঠিন প্রশ্নের মাধ্যমে নবুওতের দাবিকে মিথ্যা প্রমাণের চেষ্টা করে — যার জবাবে এই সূরা নাযিল হয়।</p>
+        </div>
+      </div>
+
+      <div class="t-item">
+        <div class="t-dot">🌙</div>
+        <div class="t-body">
+          <h4>হিজরতের পূর্বাভাস</h4>
+          <p>এই সূরায় থাকা ধৈর্য, ঈমানের পরীক্ষা ও আল্লাহর উপর ভরসার শিক্ষা মুসলিমদের ভবিষ্যতের কঠিন সময় — হিজরত ও পরবর্তী সংগ্রামের জন্য মানসিকভাবে প্রস্তুত করেছিল।</p>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="cblock">
+      <h3>🤝 তৎকালীন মুসলিমদের অবস্থা</h3>
+      <p>এই সময় মুসলিমরা সংখ্যায় ছিল কম এবং সমাজে প্রায় একঘরে অবস্থায় ছিলেন। অনেকে গোপনে ইসলাম পালন করতেন, কেউ কেউ প্রকাশ্যে ঈমান আনার কারণে নির্যাতনের শিকার হতেন। এমন পরিস্থিতিতে সূরা আল-কাহফের মূল বার্তা ছিল — দুনিয়ার ক্ষমতা, সম্পদ ও সৌন্দর্য সাময়িক, প্রকৃত সফলতা আল্লাহর প্রতি দৃঢ় ঈমান ও ধৈর্যের মধ্যেই।</p>
+      <p>আসহাবে কাহফের যুবকরা যেমন তাদের সমাজের অন্যায় থেকে বাঁচতে গুহায় আশ্রয় নিয়েছিলেন এবং আল্লাহ তাদের রক্ষা করেছিলেন, তেমনিভাবে মক্কার মুসলিমদেরও আশ্বাস দেওয়া হয় যে তাদের ঈমানের পরীক্ষাও আল্লাহর সাহায্যে উত্তীর্ণ হবে।</p>
+      <div class="note"><b>মূল শিক্ষা:</b> কঠিন পরিস্থিতিতে ধৈর্য ধরা, দুনিয়ার মোহে না পড়া এবং আল্লাহর উপর সম্পূর্ণ ভরসা রাখা — এই সূরা নাযিলের সময়কালের সবচেয়ে গুরুত্বপূর্ণ শিক্ষা, যা যুগে যুগে প্রতিটি মুসলিমের জন্য প্রযোজ্য।</div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ===== PAGE: শিক্ষা (৪ পরীক্ষা) ===== -->
+<div id="lessons" class="page">
+  <div class="page-nav">
+    <button class="back-btn" onclick="goHome()">← হোম</button>
+    <span class="page-title">🧠 শিক্ষা — ৪টি পরীক্ষা</span>
+  </div>
+  <div class="content">
+
+    <div class="cblock">
+      <h3>📖 ভূমিকা</h3>
+      <p>সূরা আল-কাহফের চারটি কাহিনি মূলত মানুষের জীবনের চারটি বড় পরীক্ষার প্রতিনিধিত্ব করে — ঈমান, সম্পদ, জ্ঞান ও ক্ষমতা। প্রতিটি কাহিনি আমাদের শেখায় কীভাবে এই পরীক্ষাগুলোর মুখে আল্লাহর উপর ভরসা রেখে সঠিক পথে থাকতে হয়।</p>
+    </div>
+
+    <div class="lgrid">
+
+      <div class="lcard l1">
+        <div class="lh">
+          <div class="li">🕌</div>
+          <div>
+            <div class="lt">ঈমানের পরীক্ষা</div>
+            <div class="lsub">আসহাবে কাহফের কাহিনি</div>
+          </div>
+        </div>
+        <p>একদল যুবক যখন তাদের সমাজে শিরক ও জুলুমের চাপের মুখে পড়েন, তখন তারা ঈমান রক্ষার জন্য ঘরবাড়ি, পরিবার ও সম্পদ ছেড়ে একটি গুহায় আশ্রয় নেন। আল্লাহ তাদের কয়েকশো বছর ঘুম পাড়িয়ে রক্ষা করেন।</p>
+        <div class="real"><b>বাস্তব জীবনের শিক্ষা</b>যখন পরিবেশ বা মানুষ আমাদের ঈমান ও নৈতিকতার বিরুদ্ধে চাপ দেয়, তখন সাহস করে সঠিক সিদ্ধান্ত নেওয়া এবং প্রয়োজনে নিজেকে খারাপ পরিবেশ থেকে দূরে রাখা — এটাই আসল ঈমানদারের পরিচয়।</div>
+      </div>
+
+      <div class="lcard l2">
+        <div class="lh">
+          <div class="li">🌿</div>
+          <div>
+            <div class="lt">সম্পদের পরীক্ষা</div>
+            <div class="lsub">দুই বাগানের মালিকের কাহিনি</div>
+          </div>
+        </div>
+        <p>এক ধনী ব্যক্তি তার সুন্দর দুটি বাগান নিয়ে এতটাই গর্বিত হয়ে পড়ে যে আল্লাহকে ভুলে যায় এবং নিজের সম্পদকে চিরস্থায়ী মনে করে। তার গরিব বন্ধু তাকে আল্লাহর কথা স্মরণ করায়, কিন্তু সে অহংকার করেই থাকে — অবশেষে রাতারাতি তার বাগান ধ্বংস হয়ে যায়।</p>
+        <div class="real"><b>বাস্তব জীবনের শিক্ষা</b>সম্পদ, গাড়ি, বাড়ি বা পদমর্যাদা — এসব আল্লাহর দান, নিজের কৃতিত্ব নয়। কৃতজ্ঞতা ও বিনয় ধরে রাখলেই এই নিয়ামত টিকে থাকে; অহংকার এলে তা যেকোনো সময় কেড়ে নেওয়া হতে পারে।</div>
+      </div>
+
+      <div class="lcard l3">
+        <div class="lh">
+          <div class="li">🌊</div>
+          <div>
+            <div class="lt">জ্ঞানের পরীক্ষা</div>
+            <div class="lsub">মূসা (আ.) ও খিজির (আ.)-এর কাহিনি</div>
+          </div>
+        </div>
+        <p>মূসা (আ.) নিজের জ্ঞানের উপর আস্থা রেখে খিজির (আ.)-এর সঙ্গী হন শেখার জন্য, কিন্তু কথা দেন প্রশ্ন না করার। খিজির (আ.) এমন তিনটি কাজ করেন যা বাহ্যিকভাবে ভুল মনে হলেও পরে তার গভীর প্রজ্ঞা প্রকাশ পায়।</p>
+        <div class="real"><b>বাস্তব জীবনের শিক্ষা</b>আমাদের জ্ঞান সীমিত। কোনো ঘটনা প্রথমে খারাপ মনে হলেও, তার পেছনে আল্লাহর পরিকল্পনা থাকতে পারে। তাড়াহুড়ো করে বিচার না করে ধৈর্য ধরা ও শেখার মানসিকতা রাখা জরুরি।</div>
+      </div>
+
+      <div class="lcard l4">
+        <div class="lh">
+          <div class="li">🏔️</div>
+          <div>
+            <div class="lt">ক্ষমতার পরীক্ষা</div>
+            <div class="lsub">যুলকারনাইনের কাহিনি</div>
+          </div>
+        </div>
+        <p>যুলকারনাইন ছিলেন এক ন্যায়পরায়ণ শাসক, যাকে আল্লাহ পূর্ব থেকে পশ্চিম পর্যন্ত বিশাল ক্ষমতা দান করেছিলেন। তিনি সেই ক্ষমতাকে অহংকারের জন্য ব্যবহার না করে এক দুর্বল জাতিকে রক্ষা করতে প্রতিরোধ-প্রাচীর নির্মাণে সাহায্য করেন, এবং সব কৃতিত্ব আল্লাহকেই দেন।</p>
+        <div class="real"><b>বাস্তব জীবনের শিক্ষা</b>পদ, ক্ষমতা বা নেতৃত্ব পেলে তা মানুষের সেবা ও কল্যাণে ব্যবহার করা উচিত, অহংকার বা অত্যাচারের জন্য নয়। প্রকৃত নেতা নিজের সাফল্যের কৃতিত্ব আল্লাহকে দেয় এবং বিনয়ী থাকে।</div>
+      </div>
+
+    </div>
+
+    <div class="cblock" style="margin-top:12px">
+      <h3>🔑 সারসংক্ষেপ</h3>
+      <p>এই চারটি পরীক্ষা — ঈমান, সম্পদ, জ্ঞান ও ক্ষমতা — প্রতিটি মানুষের জীবনে কোনো না কোনো রূপে আসে। সূরা আল-কাহফ আমাদের শেখায় যে, প্রতিটি পরীক্ষায় উত্তীর্ণ হওয়ার একমাত্র উপায় হলো আল্লাহর প্রতি দৃঢ় বিশ্বাস, কৃতজ্ঞতা, বিনয় ও ধৈর্য বজায় রাখা।</p>
+    </div>
+
+  </div>
+</div>
+
+<!-- ===== PAGE: বিভিন্ন ঘটনা ===== -->
+<div id="stories" class="page">
+  <div class="page-nav">
+    <button class="back-btn" onclick="goHome()">← হোম</button>
+    <span class="page-title">📜 বিভিন্ন ঘটনা</span>
+  </div>
+  <div class="content">
+
+    <div class="cblock">
+      <h3>📖 ভূমিকা</h3>
+      <p>সূরা আল-কাহফে চারটি গুরুত্বপূর্ণ ঘটনা বর্ণিত হয়েছে। কার্ডে ট্যাপ করে বিস্তারিত পড়ুন।</p>
+    </div>
+
+    <!-- 1: আসহাবে কাহফ -->
+    <div class="scard s1" onclick="toggleCard(this)">
+      <div class="shead">
+        <div class="si">🕌</div>
+        <div class="stitle">
+          <div class="stn">১. আসহাবে কাহফ</div>
+          <div class="std">গুহাবাসী যুবকদের ঘটনা — ঈমানের পরীক্ষা</div>
+        </div>
+        <div class="chev">▾</div>
+      </div>
+      <div class="sbody">
+        <div class="sbody-in">
+          <div class="stage">🏛️ পরিস্থিতি</div>
+          <p>প্রাচীন কালে একটি শহরে কিছু যুবক এক আল্লাহর প্রতি ঈমান এনেছিলেন, কিন্তু তাদের রাজা ও সমাজ মূর্তিপূজায় বিশ্বাসী ছিল। ঈমান প্রকাশ করায় তাদের জীবনের ঝুঁকি দেখা দেয়।</p>
+
+          <div class="stage">🏃 সিদ্ধান্ত</div>
+          <p>তারা শহর ছেড়ে একটি পাহাড়ের গুহায় আশ্রয় নেন এবং আল্লাহর কাছে দোয়া করেন যেন তিনি তাদের সাহায্য করেন। তাদের সাথে ছিল একটি কুকুরও, যা গুহার দরজায় শুয়ে পড়ে।</p>
+
+          <div class="stage">😴 দীর্ঘ নিদ্রা</div>
+          <p>আল্লাহ তাদের গুহার মধ্যে গভীর ঘুমে নিমজ্জিত করেন — যা ছিল প্রায় তিনশ বছরের বেশি সময়। সূর্যের আলো গুহার ভেতরে সরাসরি প্রবেশ করত না, যা তাদের শরীরকে অক্ষত রাখে।</p>
+
+          <div class="stage">🌅 জাগরণ</div>
+          <p>দীর্ঘ সময় পর তারা জাগ্রত হন এবং মনে করেন কয়েক ঘণ্টা মাত্র ঘুমিয়েছেন। তাদের একজন খাবার কিনতে শহরে যান, কিন্তু তার পুরনো মুদ্রা দেখে মানুষ বিস্মিত হয় — তখন বোঝা যায় শত শত বছর কেটে গেছে এবং সমাজ এখন তাওহীদে বিশ্বাসী।</p>
+
+          <div class="stage">✨ ফলাফল</div>
+          <p>এই ঘটনা মানুষের কাছে আল্লাহর ক্ষমতা ও পুনরুত্থানের প্রমাণ হয়ে ওঠে। আসহাবে কাহফের কাহিনি প্রমাণ করে, ঈমান রক্ষার জন্য আল্লাহর উপর ভরসা রাখলে তিনি অপ্রত্যাশিত উপায়ে সাহায্য করেন।</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2: দুই বাগানের ঘটনা -->
+    <div class="scard s2" onclick="toggleCard(this)">
+      <div class="shead">
+        <div class="si">🌿</div>
+        <div class="stitle">
+          <div class="stn">২. দুই বাগানের মালিকের ঘটনা</div>
+          <div class="std">সম্পদের পরীক্ষা ও অহংকারের পরিণতি</div>
+        </div>
+        <div class="chev">▾</div>
+      </div>
+      <div class="sbody">
+        <div class="sbody-in">
+          <div class="stage">👤 দুই ব্যক্তি</div>
+          <p>একজন ছিল ধনী, যার দুটি সুন্দর বাগান ছিল — আঙুর, খেজুর গাছ এবং মাঝখানে প্রবাহিত নদী। অন্যজন তুলনামূলক সাধারণ, কিন্তু ঈমানদার ও বিনয়ী।</p>
+
+          <div class="stage">😤 অহংকার</div>
+          <p>ধনী ব্যক্তি তার বাগানে নিয়ে গিয়ে বলল, "আমার মনে হয় না এটা কখনো শেষ হবে," এবং কিয়ামতকে অস্বীকার করে নিজের সম্পদকে চিরস্থায়ী বলে দাবি করল।</p>
+
+          <div class="stage">🗣️ উপদেশ</div>
+          <p>তার সঙ্গী তাকে স্মরণ করিয়ে দেয় — "তুমি কি বলবে না, এটা আল্লাহর ইচ্ছা?" এবং সতর্ক করে যে আল্লাহ চাইলে এই বাগান ধ্বংস করতে পারেন, কিন্তু ধনী ব্যক্তি অহংকার করেই থাকে।</p>
+
+          <div class="stage">⚡ ধ্বংস</div>
+          <p>একরাতে আল্লাহর নির্দেশে আকাশী বিপর্যয় নেমে আসে এবং পুরো বাগান ধ্বংস হয়ে যায়। সকালে ধনী ব্যক্তি তার বাগানের ধ্বংসাবশেষ দেখে আফসোস করে, কিন্তু তখন আর কিছুই করার ছিল না।</p>
+
+          <div class="stage">✨ ফলাফল</div>
+          <p>এই কাহিনি শেখায় যে দুনিয়ার সম্পদ ও সাফল্য আল্লাহর দান, এবং তা চিরস্থায়ী নয়। কৃতজ্ঞতা ও বিনয় না থাকলে যেকোনো সময় তা হারিয়ে যেতে পারে।</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3: মূসা ও খিজির -->
+    <div class="scard s3" onclick="toggleCard(this)">
+      <div class="shead">
+        <div class="si">🌊</div>
+        <div class="stitle">
+          <div class="stn">৩. মূসা (আ.) ও খিজির (আ.)</div>
+          <div class="std">জ্ঞানের পরীক্ষা ও সবরের শিক্ষা</div>
+        </div>
+        <div class="chev">▾</div>
+      </div>
+      <div class="sbody">
+        <div class="sbody-in">
+          <div class="stage">🔍 সাক্ষাতের সন্ধান</div>
+          <p>মূসা (আ.) আল্লাহর নির্দেশে এমন একজন বান্দার সন্ধানে বের হন যার কাছে বিশেষ জ্ঞান রয়েছে। তিনি ও তার সাথী এক বিশেষ স্থানে খিজির (আ.)-এর সাক্ষাৎ পান।</p>
+
+          <div class="stage">🤝 শর্ত</div>
+          <p>মূসা (আ.) তার সঙ্গী হতে চান শেখার জন্য। খিজির (আ.) শর্ত দেন যে, তিনি যা করবেন তা না বুঝে প্রশ্ন করা যাবে না, যতক্ষণ না তিনি নিজে ব্যাখ্যা দেন। মূসা (আ.) রাজি হন।</p>
+
+          <div class="stage">🚢 প্রথম ঘটনা — নৌকা</div>
+          <p>তারা এক নৌকায় চড়েন। খিজির (আ.) সেই নৌকার একটি ফলক ছিদ্র করে দেন। মূসা (আ.) আশ্চর্য হয়ে প্রতিবাদ করেন, কারণ এটি যাত্রীদের জন্য বিপজ্জনক মনে হয়।</p>
+
+          <div class="stage">👦 দ্বিতীয় ঘটনা — শিশু</div>
+          <p>পথে তারা এক কিশোরের সাক্ষাৎ পান, এবং খিজির (আ.) তাকে হত্যা করেন। মূসা (আ.) এবার আরও বিস্মিত হয়ে প্রতিবাদ করেন, কারণ এটি স্পষ্ট অন্যায় মনে হয়।</p>
+
+          <div class="stage">🧱 তৃতীয় ঘটনা — প্রাচীর</div>
+          <p>এক গ্রামে পৌঁছে তারা ক্ষুধার্ত থাকেন, কিন্তু গ্রামবাসী তাদের আপ্যায়ন করে না। তবুও খিজির (আ.) সেখানকার একটি হেলে পড়া প্রাচীর সোজা করে দেন বিনা পারিশ্রমিকে। মূসা (আ.) এবার বলেন, ইচ্ছা করলে এর জন্য মজুরি নেওয়া যেত।</p>
+
+          <div class="stage">💡 ব্যাখ্যা</div>
+          <p>খিজির (আ.) তখন বিদায় নেওয়ার আগে তিনটি ঘটনার রহস্য ব্যাখ্যা করেন: নৌকা ছিদ্র করা হয়েছিল যাতে এক অত্যাচারী রাজা সেটি কেড়ে না নেয়; কিশোরটি বড় হয়ে তার ঈমানদার পিতামাতার জন্য কষ্টের কারণ হতো, তাই আল্লাহর ইচ্ছায় তার পরিবর্তে নেক সন্তান দেওয়া হবে; এবং প্রাচীরের নিচে দুই অনাথের জন্য গুপ্তধন রাখা ছিল, যা প্রাচীর ভেঙে পড়লে দুষ্ট লোকেরা নিয়ে যেত।</p>
+
+          <div class="stage">✨ ফলাফল</div>
+          <p>এই কাহিনি শেখায় — আল্লাহর জ্ঞান অসীম, আমাদের জ্ঞান সীমিত। কোনো ঘটনা বাহ্যিকভাবে খারাপ মনে হলেও তার পেছনে আল্লাহর গভীর হিকমত থাকতে পারে। ধৈর্য ধরে শেখার মানসিকতা রাখা জরুরি।</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4: যুলকারনাইন -->
+    <div class="scard s4" onclick="toggleCard(this)">
+      <div class="shead">
+        <div class="si">🏔️</div>
+        <div class="stitle">
+          <div class="stn">৪. যুলকারনাইনের ঘটনা</div>
+          <div class="std">ক্ষমতার পরীক্ষা ও ন্যায়পরায়ণ শাসন</div>
+        </div>
+        <div class="chev">▾</div>
+      </div>
+      <div class="sbody">
+        <div class="sbody-in">
+          <div class="stage">👑 ক্ষমতা প্রদান</div>
+          <p>আল্লাহ যুলকারনাইনকে পৃথিবীতে বিশাল শক্তি ও সম্পদ দান করেন এবং তাকে পথ চলার সুযোগ ও উপায় দান করেন, যার মাধ্যমে তিনি পূর্ব থেকে পশ্চিম পর্যন্ত ভ্রমণ করেন।</p>
+
+          <div class="stage">🌅 পশ্চিমে যাত্রা</div>
+          <p>তিনি পশ্চিম দিকে গিয়ে এক জাতির সাক্ষাৎ পান এবং সেখানে অবিশ্বাসীদের শাস্তি দেওয়ার ও বিশ্বাসীদের প্রতি দয়া করার ক্ষমতা প্রদর্শন করেন — ন্যায়বিচার বজায় রেখে।</p>
+
+          <div class="stage">🌄 পূর্বে যাত্রা</div>
+          <p>অতঃপর তিনি পূর্ব দিকে যাত্রা করেন এবং এমন এক জাতির সাক্ষাৎ পান যাদের সূর্য থেকে আড়াল করার মতো কোনো ছাউনি ছিল না।</p>
+
+          <div class="stage">🧱 প্রাচীর নির্মাণ</div>
+          <p>এক জাতি তার কাছে অভিযোগ করে যে, ইয়াজুজ-মাজুজ নামক এক বিধ্বংসী জাতি তাদের উপর হামলা করে। তারা যুলকারনাইনকে অর্থ দিয়ে একটি প্রতিরোধ-প্রাচীর তৈরির আবেদন করে।</p>
+
+          <div class="stage">🙏 বিনয়ী প্রতিক্রিয়া</div>
+          <p>যুলকারনাইন তাদের অর্থ গ্রহণ করেননি, বরং বলেন আল্লাহ যা দিয়েছেন তা যথেষ্ট। তিনি লোহা ও তামা গলিয়ে এক বিশাল ও মজবুত প্রাচীর নির্মাণ করেন, যা ইয়াজুজ-মাজুজকে আটকে রাখে।</p>
+
+          <div class="stage">✨ ফলাফল</div>
+          <p>এই কাহিনি শেখায় — আল্লাহ প্রদত্ত ক্ষমতা ও সম্পদ মানুষের কল্যাণে ব্যবহার করা উচিত, অহংকার বা ব্যক্তিগত লাভের জন্য নয়। যুলকারনাইন প্রতিটি কৃতিত্ব আল্লাহর প্রতি সমর্পণ করেন, যা একজন আদর্শ নেতার গুণ।</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ===== PAGE: ফজিলত ===== -->
+<div id="fazilat" class="page">
+  <div class="page-nav">
+    <button class="back-btn" onclick="goHome()">← হোম</button>
+    <span class="page-title">⭐ ফজিলত</span>
+  </div>
+  <div class="content">
+
+    <div class="cblock">
+      <h3>📖 ভূমিকা</h3>
+      <p>সূরা আল-কাহফের ফজিলত সম্পর্কে বিভিন্ন হাদিসে উল্লেখ পাওয়া যায়। নিচে শুধুমাত্র সহিহ ও গ্রহণযোগ্য সূত্রসমৃদ্ধ ফজিলতগুলো উল্লেখ করা হলো।</p>
+    </div>
+
+    <!-- 1: জুমার দিনে তিলাওয়াত -->
+    <div class="hcard">
+      <div class="htop">
+        <div class="hi">📅</div>
+        <div>
+          <div class="ht">জুমার দিনে তিলাওয়াতের ফজিলত</div>
+          <div class="hsub">শুক্রবার পাঠের বিশেষ মর্যাদা</div>
+        </div>
+      </div>
+      <div class="htext">
+        রাসূলুল্লাহ (ﷺ) বলেছেন: "যে ব্যক্তি জুমার দিনে সূরা আল-কাহফ তিলাওয়াত করবে, তার জন্য (পরবর্তী জুমা পর্যন্ত) এক বিশেষ নূর প্রকাশিত হবে।"
+      </div>
+      <span class="hsrc">📚 সুনানে দারেমি, সহিহ আল-জামি</span>
+      <p class="expl">এই হাদিসের ভিত্তিতে আলেমরা জুমার দিনে (শুক্রবার) সূরা আল-কাহফ তিলাওয়াত করাকে একটি প্রিয় ও ফজিলতপূর্ণ আমল বলে উল্লেখ করেছেন। এটি সপ্তাহের একটি নির্দিষ্ট দিনে পালনের একটি সুন্দর সুন্নাহ-সংগত অভ্যাস।</p>
+    </div>
+
+    <!-- 2: দাজ্জাল থেকে রক্ষা -->
+    <div class="hcard">
+      <div class="htop">
+        <div class="hi">🛡️</div>
+        <div>
+          <div class="ht">দাজ্জালের ফিতনা থেকে রক্ষা</div>
+          <div class="hsub">প্রথম দশ আয়াত মুখস্থ রাখার গুরুত্ব</div>
+        </div>
+      </div>
+      <div class="htext">
+        রাসূলুল্লাহ (ﷺ) বলেছেন: "তোমাদের মধ্যে যে কেউ দাজ্জালের সাক্ষাৎ পাবে, সে যেন তার বিরুদ্ধে সূরা আল-কাহফের প্রথম আয়াতগুলো পাঠ করে; কারণ এটি দাজ্জালের ফিতনা থেকে রক্ষাকারী।"
+      </div>
+      <span class="hsrc">📚 সহিহ মুসলিম</span>
+      <p class="expl">এই হাদিস থেকে জানা যায়, সূরা আল-কাহফের প্রথম দশটি আয়াত মুখস্থ করা ও নিয়মিত তিলাওয়াত করা দাজ্জালের ফিতনা থেকে আত্মরক্ষার একটি উপায়। এই কারণে অনেক আলেম এই আয়াতগুলো মুখস্থ রাখার পরামর্শ দিয়েছেন।</p>
+    </div>
+
+    <!-- 3: দুই জুমার মধ্যে নূর -->
+    <div class="hcard">
+      <div class="htop">
+        <div class="hi">✨</div>
+        <div>
+          <div class="ht">দুই জুমার মধ্যে নূর</div>
+          <div class="hsub">আলোকিত হওয়ার ওয়াদা</div>
+        </div>
+      </div>
+      <div class="htext">
+        হাদিসে এসেছে: "যে ব্যক্তি জুমার দিনে সূরা আল-কাহফ পাঠ করবে, তার জন্য তার পদতল থেকে আকাশ পর্যন্ত নূর উজ্জ্বল হতে থাকবে, যা কিয়ামতের দিন তার জন্য আলো হবে; এবং দুই জুমার মধ্যবর্তী সময়ের গুনাহ মাফ করা হবে।"
+      </div>
+      <span class="hsrc">📚 ইবনে কাসির তাফসির, ইবনে মারদুইয়াহ — হাদিস বিশেষজ্ঞদের মতানুযায়ী</span>
+      <p class="expl">কিছু রেওয়ায়েতে "নূর" দুই জুমার মধ্যবর্তী সময়ের জন্য, এবং কিছু রেওয়ায়েতে কিয়ামতের দিনের জন্য উল্লেখ আছে। সনদের দিক থেকে দুর্বলতা থাকা সত্ত্বেও, এই বিষয়ে একাধিক রেওয়ায়েত বিদ্যমান থাকায় আলেমরা একে ফজিলতের আমল হিসেবে গ্রহণযোগ্য মনে করেন — তবে দাজ্জাল থেকে রক্ষা ও জুমার তিলাওয়াতের হাদিসের মতো এটি সর্বোচ্চ মাত্রার সহিহ নয়।</p>
+    </div>
+
+    <div class="note"><b>মনে রাখবেন:</b> ফজিলতের আমল করার সময় সবচেয়ে গুরুত্বপূর্ণ হলো সহিহ সূত্রের উপর ভিত্তি করে আমল করা এবং রিয়া (লোক দেখানো) থেকে দূরে থেকে একনিষ্ঠভাবে আল্লাহর সন্তুষ্টির উদ্দেশ্যে তা করা।</div>
+
+  </div>
+</div>
+
+<!-- ===== PAGE: কুইজ ===== -->
+<div id="quiz" class="page">
+  <div class="page-nav">
+    <button class="back-btn" onclick="quizExit()">← হোম</button>
+    <span class="page-title">🧪 কুইজ</span>
+  </div>
+
+  <!-- INTRO -->
+  <div id="qz-intro" class="content">
+    <div class="cblock">
+      <h3>🧪 সূরা আল-কাহফ কুইজ</h3>
+      <p>মোট ৫০টি MCQ প্রশ্ন থাকবে — সূরা, তাফসির, শানে নুজুল, ঘটনাসমূহ ও ফজিলত থেকে। প্রতিটি সঠিক উত্তরে ১ পয়েন্ট। শেষে আপনার স্কোর ও র‍্যাংক দেখানো হবে।</p>
+      <div class="tag-row">
+        <span class="tagx">৫০টি প্রশ্ন</span>
+        <span class="tagx">MCQ ফরম্যাট</span>
+        <span class="tagx">স্কোর ও র‍্যাংক</span>
+      </div>
+    </div>
+    <button class="res-btn primary" style="width:100%;border-radius:10px;margin-top:6px" onclick="quizStart()">কুইজ শুরু করুন ▶</button>
+  </div>
+
+  <!-- QUIZ RUNNING -->
+  <div id="qz-run" class="content" style="display:none">
+    <div class="qz-bar"><div class="qz-bar-in" id="qzBarIn"></div></div>
+    <div class="qz-top" style="background:transparent;border:none;padding:0 0 8px">
+      <span class="qz-prog" id="qzProg">প্রশ্ন ১/৫০</span>
+      <span class="qz-score" id="qzScore">স্কোর: ০</span>
+    </div>
+    <div class="qz-card">
+      <div class="qz-q" id="qzQ"></div>
+      <div id="qzOpts"></div>
+      <button class="qz-next" id="qzNext" onclick="quizNext()">পরবর্তী ➜</button>
+    </div>
+  </div>
+
+  <!-- RESULT -->
+  <div id="qz-result" class="res-wrap" style="display:none">
+    <div class="res-circle">
+      <div class="rscore" id="resScore">0</div>
+      <div class="rtotal">/ ৫০</div>
+    </div>
+    <div class="res-rank" id="resRank">🏆 র‍্যাংক</div>
+    <div class="res-msg" id="resMsg"></div>
+    <div class="res-btns">
+      <button class="res-btn primary" onclick="quizStart()">🔄 আবার চেষ্টা করুন</button>
+      <button class="res-btn ghost" onclick="quizExit()">🏠 হোমে ফিরুন</button>
+    </div>
+  </div>
+
+</div>
+
+<!-- ===== PAGE: শেয়ার কার্ড ===== -->
+<div id="share" class="page">
+  <div class="page-nav">
+    <button class="back-btn" onclick="goHome()">← হোম</button>
+    <span class="page-title">🖼️ শেয়ার কার্ড</span>
+  </div>
+  <div class="content">
+
+    <div class="shr-preview-wrap">
+      <canvas id="shrCanvas" width="600" height="600"></canvas>
+    </div>
+
+    <div class="sec-lbl" style="padding:4px 0 6px">🎨 ব্যাকগ্রাউন্ড থিম</div>
+    <div class="shr-bg-row" id="shrBgRow"></div>
+
+    <div class="sec-lbl" style="padding:4px 0 6px">📝 অংশ বাছাই করুন</div>
+    <div class="shr-tabs">
+      <div class="shr-tab active" data-cat="ayat" onclick="shrSwitchCat(this)">আয়াত</div>
+      <div class="shr-tab" data-cat="lesson" onclick="shrSwitchCat(this)">শিক্ষা</div>
+      <div class="shr-tab" data-cat="fazilat" onclick="shrSwitchCat(this)">ফজিলত</div>
+    </div>
+    <div class="shr-quote-list" id="shrQuoteList"></div>
+
+    <div class="shr-actions">
+      <button class="shr-btn dl" onclick="shrDownload()">⬇️ ডাউনলোড</button>
+      <button class="shr-btn fb" onclick="shrShare('facebook')">📘 ফেসবুকে শেয়ার</button>
+      <button class="shr-btn wa" onclick="shrShare('whatsapp')">💬 হোয়াটসঅ্যাপে শেয়ার</button>
+    </div>
+
+    <div class="note" style="margin-top:12px"><b>টিপস:</b> ডাউনলোড করা ছবিটি ফেসবুক বা হোয়াটসঅ্যাপ অ্যাপে গিয়ে সরাসরি আপলোড/শেয়ার করুন। শেয়ার বাটনগুলো ছবিটি প্রথমে ডাউনলোড করবে, তারপর সংশ্লিষ্ট অ্যাপ খুলবে — সেখানে ছবিটি যুক্ত করে পোস্ট/সেন্ড করুন।</div>
+
+  </div>
+</div>
+
+<script>
+/* THEME */
+const TH=['auto','light','dark'];
+const LB={auto:'অটো',light:'লাইট',dark:'ডার্ক'};
+const IC={auto:'🌓',light:'☀️',dark:'🌙'};
+let cur=localStorage.getItem('kahf-th')||'auto';
+
+function applyTheme(t){
+  const h=document.documentElement;
+  t==='auto'?h.removeAttribute('data-theme'):h.setAttribute('data-theme',t);
+  document.getElementById('ticon').textContent=IC[t];
+  document.getElementById('tlbl').textContent=LB[t];
+}
+function cycleTheme(){
+  cur=TH[(TH.indexOf(cur)+1)%TH.length];
+  localStorage.setItem('kahf-th',cur);
+  applyTheme(cur);
+}
+applyTheme(cur);
+
+/* NAVIGATION */
+const READY=['shane','period','lessons','stories','fazilat','quiz','share'];
+function goHome(){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('home').classList.add('active');
+  window.scrollTo(0,0);
+}
+
+/* EXPANDABLE STORY CARDS */
+function toggleCard(el){
+  el.classList.toggle('open');
+}
+
+/* ===================== QUIZ ===================== */
+const QZ_QUESTIONS=[
+{q:"সূরা আল-কাহফ পবিত্র কুরআনের কততম সূরা?",o:["১৬তম","১৭তম","১৮তম","১৯তম"],a:2},
+{q:"সূরা আল-কাহফে মোট আয়াত কতটি?",o:["১০০","১০৫","১১০","১২০"],a:2},
+{q:"সূরা আল-কাহফ কোন প্রকারের সূরা?",o:["মাদানি","মাক্কী","মিশ্র","জানা নেই"],a:1},
+{q:"সূরা আল-কাহফে কতটি রুকু আছে?",o:["১০","১১","১২","১৪"],a:2},
+{q:"সূরা আল-কাহফ কুরআনের কোন পারায় অবস্থিত?",o:["১৩–১৪","১৫–১৬","১৭–১৮","১৯–২০"],a:1},
+{q:"সূরা আল-কাহফের শুরুতে কোন বিষয়ের প্রশংসা করা হয়েছে?",o:["আল্লাহর কুদরত","কুরআন নাযিল","নবীর চরিত্র","সাহাবাদের ত্যাগ"],a:1},
+{q:"কুরাইশরা কতটি প্রশ্ন নিয়ে রাসূল (ﷺ)-এর কাছে এসেছিল?",o:["দুটি","তিনটি","চারটি","পাঁচটি"],a:1},
+{q:"কুরাইশদের প্রশ্নগুলো কাদের কাছ থেকে সংগৃহীত হয়েছিল?",o:["খ্রিস্টান পণ্ডিত","ইহুদি পণ্ডিত","মাজুসি পণ্ডিত","সাবিয়ান পণ্ডিত"],a:1},
+{q:"আসহাবে কাহফের যুবকরা কেন গুহায় আশ্রয় নিয়েছিলেন?",o:["যুদ্ধে পরাজিত হয়ে","ব্যবসার জন্য","ঈমান রক্ষার জন্য","আবহাওয়ার কারণে"],a:2},
+{q:"আসহাবে কাহফের সাথে কোন প্রাণী ছিল?",o:["বিড়াল","কুকুর","ঘোড়া","পাখি"],a:1},
+{q:"আসহাবে কাহফের যুবকরা গুহায় কত বছর ছিলেন বলে কুরআনে উল্লেখ আছে?",o:["১০০ বছরের কাছাকাছি","৩০৯ বছর","৫০০ বছর","৭০০ বছর"],a:1},
+{q:"গুহা থেকে জাগ্রত হয়ে এক যুবক কী করতে শহরে যান?",o:["খবর জানতে","নামাজ পড়তে","খাবার কিনতে","পরিবার দেখতে"],a:2},
+{q:"শহরে গিয়ে কী কারণে যুবকটি বিস্মিত হয়েছিল?",o:["শহর বদলে গিয়েছিল","তার মুদ্রা পুরনো ছিল","সবাই তাকে চিনত","শহর খালি ছিল"],a:1},
+{q:"আসহাবে কাহফের ঘটনা মূলত কিসের প্রমাণ?",o:["সম্পদের গুরুত্ব","পুনরুত্থানের ক্ষমতা","যুদ্ধের কৌশল","ব্যবসার নিয়ম"],a:1},
+{q:"দুই বাগানের মালিকের ঘটনায় ধনী ব্যক্তির বাগানে কী ছিল?",o:["শুধু খেজুর গাছ","আঙুর ও খেজুর গাছ এবং নদী","গম খেত","জলপাই গাছ"],a:1},
+{q:"ধনী ব্যক্তি তার বাগান সম্পর্কে কী ধারণা করেছিল?",o:["এটি ধ্বংস হবে","এটি কখনো শেষ হবে না","এটি বিক্রি করবে","এটি ভাগ করবে"],a:1},
+{q:"ধনী ব্যক্তির সঙ্গী তাকে কী স্মরণ করিয়ে দেন?",o:["ব্যবসার পরিকল্পনা","আল্লাহর ইচ্ছার কথা","পরিবারের কথা","শত্রুর কথা"],a:1},
+{q:"শেষে ধনী ব্যক্তির বাগানের কী হয়েছিল?",o:["আরও সমৃদ্ধ হয়েছিল","বিক্রি হয়ে গিয়েছিল","ধ্বংস হয়ে গিয়েছিল","অন্যকে দান করেছিল"],a:2},
+{q:"দুই বাগানের ঘটনা থেকে মূল শিক্ষা কী?",o:["সম্পদ চিরস্থায়ী","অহংকার ক্ষতিকর","বাগান করা পাপ","গরিব হওয়া ভালো"],a:1},
+{q:"মূসা (আ.) কেন যাত্রা শুরু করেছিলেন?",o:["যুদ্ধের জন্য","এক জ্ঞানী বান্দার সন্ধানে","হজের জন্য","ব্যবসার জন্য"],a:1},
+{q:"মূসা (আ.) যে বান্দার সাক্ষাৎ পান, তার নাম কী?",o:["ইলিয়াস (আ.)","খিজির (আ.)","ইউনুস (আ.)","হারুন (আ.)"],a:1},
+{q:"খিজির (আ.) মূসা (আ.)-কে কী শর্ত দিয়েছিলেন?",o:["খাবার আনতে হবে","প্রশ্ন না করতে হবে","দ্রুত হাঁটতে হবে","কথা না বলতে হবে"],a:1},
+{q:"প্রথম ঘটনায় খিজির (আ.) কী করেছিলেন?",o:["নৌকা ছিদ্র করেছিলেন","নৌকা মেরামত করেছিলেন","নৌকা বিক্রি করেছিলেন","নৌকা ডুবিয়ে দিয়েছিলেন"],a:0},
+{q:"দ্বিতীয় ঘটনায় খিজির (আ.) কাকে হত্যা করেছিলেন?",o:["একজন বৃদ্ধকে","একজন কিশোরকে","একজন সৈনিককে","একজন ব্যবসায়ীকে"],a:1},
+{q:"তৃতীয় ঘটনায় খিজির (আ.) কী করেছিলেন?",o:["একটি ঘর তৈরি করেছিলেন","একটি প্রাচীর সোজা করেছিলেন","একটি কূপ খুঁড়েছিলেন","একটি গাছ লাগিয়েছিলেন"],a:1},
+{q:"প্রাচীরের নিচে কাদের জন্য গুপ্তধন রাখা ছিল?",o:["দুই এতিমের জন্য","রাজার জন্য","গ্রামবাসীদের জন্য","খিজিরের জন্য"],a:0},
+{q:"নৌকা ছিদ্র করার কারণ কী ছিল?",o:["পানি প্রবেশের জন্য","অত্যাচারী রাজা থেকে রক্ষার জন্য","নৌকা পরীক্ষার জন্য","মাছ ধরার জন্য"],a:1},
+{q:"মূসা (আ.) ও খিজির (আ.)-এর ঘটনা থেকে মূল শিক্ষা কী?",o:["সবসময় প্রশ্ন করা উচিত","আল্লাহর জ্ঞান অসীম, মানুষের সীমিত","জ্ঞানীদের এড়িয়ে চলা উচিত","ভ্রমণ করা উচিত নয়"],a:1},
+{q:"যুলকারনাইন কেমন শাসক ছিলেন?",o:["অত্যাচারী","ন্যায়পরায়ণ","দুর্বল","অলস"],a:1},
+{q:"যুলকারনাইন কোন দিকে প্রথম যাত্রা করেছিলেন বলে উল্লেখ আছে?",o:["উত্তরে","দক্ষিণে","পশ্চিমে","পূর্বে"],a:2},
+{q:"পূর্বের জাতির সম্পর্কে কী বলা হয়েছে?",o:["তারা ধনী ছিল","তাদের সূর্য থেকে আড়াল করার কিছু ছিল না","তারা যুদ্ধপ্রিয় ছিল","তারা ব্যবসায়ী ছিল"],a:1},
+{q:"যুলকারনাইনের কাছে কোন জাতি সাহায্য চেয়েছিল?",o:["রোমানদের বিরুদ্ধে","ইয়াজুজ-মাজুজের বিরুদ্ধে","পার্সিয়ানদের বিরুদ্ধে","মিশরীয়দের বিরুদ্ধে"],a:1},
+{q:"যুলকারনাইন প্রাচীর তৈরিতে কী কী উপাদান ব্যবহার করেছিলেন?",o:["মাটি ও কাঠ","লোহা ও তামা","পাথর ও চুন","ইট ও সিমেন্ট"],a:1},
+{q:"যুলকারনাইন কি জাতির কাছ থেকে অর্থ গ্রহণ করেছিলেন?",o:["হ্যাঁ, পূর্ণ মূল্য নিয়েছিলেন","না, প্রত্যাখ্যান করেছিলেন","অর্ধেক নিয়েছিলেন","জানা যায় না"],a:1},
+{q:"যুলকারনাইনের ঘটনা থেকে মূল শিক্ষা কী?",o:["ক্ষমতা ব্যক্তিগত লাভের জন্য","ক্ষমতা মানুষের কল্যাণে ব্যবহার করা উচিত","ক্ষমতা পরিহার করা উচিত","ক্ষমতা চিরস্থায়ী"],a:1},
+{q:"সূরা আল-কাহফের চারটি কাহিনি কোন চারটি পরীক্ষার প্রতিনিধিত্ব করে?",o:["ঈমান, সম্পদ, জ্ঞান, ক্ষমতা","নামাজ, রোজা, হজ, যাকাত","জন্ম, বিয়ে, কাজ, মৃত্যু","শিক্ষা, চাকরি, পরিবার, স্বাস্থ্য"],a:0},
+{q:"জুমার দিনে সূরা আল-কাহফ তিলাওয়াতের ফজিলত সম্পর্কে হাদিস কোন গ্রন্থে এসেছে?",o:["সহিহ বুখারি একক","সুনানে দারেমি / সহিহ আল-জামি","তিরমিজি একক","জানা নেই"],a:1},
+{q:"দাজ্জালের ফিতনা থেকে রক্ষার জন্য কোন আয়াতগুলো গুরুত্বপূর্ণ?",o:["শেষ দশ আয়াত","মাঝের দশ আয়াত","প্রথম দশ আয়াত","কোনো নির্দিষ্ট নয়"],a:2},
+{q:"দাজ্জাল থেকে রক্ষার হাদিসটি কোন গ্রন্থে বর্ণিত হয়েছে?",o:["সহিহ মুসলিম","সুনানে ইবনে মাজাহ একক","মুসনাদে আহমাদ একক","জামে তিরমিজি একক"],a:0},
+{q:"কোন আমলের ফলে দুই জুমার মধ্যবর্তী গুনাহ মাফের কথা উল্লেখ আছে?",o:["সূরা ইয়াসিন পাঠ","সূরা আল-কাহফ পাঠ","সূরা মুলক পাঠ","সূরা রাহমান পাঠ"],a:1},
+{q:"সূরা আল-কাহফ নাযিল হয়েছিল কোন সময়ে?",o:["মদিনায় হিজরতের পর","মক্কী জীবনের মধ্য পর্যায়ে","বদর যুদ্ধের পর","মক্কা বিজয়ের পর"],a:1},
+{q:"কুরাইশরা কীভাবে রাসূল (ﷺ)-কে চ্যালেঞ্জ করার চেষ্টা করেছিল?",o:["শক্তি প্রয়োগ করে","কঠিন প্রশ্নের মাধ্যমে","অর্থ প্রস্তাব দিয়ে","শান্তি চুক্তির মাধ্যমে"],a:1},
+{q:"\"ইনশাআল্লাহ\" বলার শিক্ষা কোন প্রসঙ্গে এসেছে?",o:["আসহাবে কাহফের ঘটনায়","রাসূলের উত্তর দিতে বিলম্বের ঘটনায়","যুলকারনাইনের ঘটনায়","দুই বাগানের ঘটনায়"],a:1},
+{q:"আসহাবে কাহফের যুবকরা কোন বিশ্বাসের কারণে নির্যাতনের শিকার হয়েছিলেন?",o:["মূর্তিপূজা প্রত্যাখ্যান করে এক আল্লাহর প্রতি ঈমান","রাজার বিরুদ্ধে বিদ্রোহ","কর না দেওয়া","ভিন্ন ভাষা ব্যবহার"],a:0},
+{q:"মাক্কী জীবনে মুসলিমদের অবস্থা কেমন ছিল?",o:["সংখ্যাগরিষ্ঠ ও শক্তিশালী","সংখ্যায় কম ও নির্যাতিত","রাজনৈতিক ক্ষমতায়","অর্থনৈতিকভাবে সমৃদ্ধ"],a:1},
+{q:"সূরা আল-কাহফের কাহিনিগুলোর মূল উদ্দেশ্য কী?",o:["বিনোদন","ঐতিহাসিক তথ্য সংরক্ষণ","ঈমান, সবর ও আল্লাহর উপর ভরসার শিক্ষা","শুধু কুরাইশদের জবাব দেওয়া"],a:2},
+{q:"\"মারেফুল কুরআন\" তাফসিরের লেখক কে?",o:["ইমাম গাজালি (রহ.)","মুফতি মুহাম্মদ শফী (রহ.)","ইবনে কাসির (রহ.)","ইমাম শাফেয়ি (রহ.)"],a:1},
+{q:"দুই বাগানের মালিকের সঙ্গী কেমন মানসিকতার ছিলেন?",o:["অহংকারী","ঈমানদার ও বিনয়ী","ধনলোভী","অলস"],a:1},
+{q:"খিজির (আ.)-এর তিনটি কাজের ব্যাখ্যা কখন দেওয়া হয়?",o:["কাজের আগে","কাজের সময়","বিদায়ের আগে শেষে","কখনো দেওয়া হয়নি"],a:2},
+{q:"যে কিশোরকে হত্যা করা হয়েছিল, তার ভবিষ্যৎ সম্পর্কে কী বলা হয়েছে?",o:["সে নবী হতো","সে তার ঈমানদার পিতামাতার জন্য কষ্টের কারণ হতো","সে রাজা হতো","সে ধনী হতো"],a:1},
+{q:"সূরা আল-কাহফের কাহিনিগুলো কোন বিষয়ে সতর্ক করে?",o:["দুনিয়ার মোহ ও পরীক্ষা থেকে","ভ্রমণ থেকে","ব্যবসা থেকে","শিক্ষা থেকে"],a:0},
+{q:"আসহাবে কাহফ, খিজির ও যুলকারনাইনের ঘটনা — এই তিনটি উত্তর কাদের প্রশ্নের জবাবে এসেছিল?",o:["সাহাবাদের","কুরাইশ ও ইহুদি পণ্ডিতদের প্রশ্নের","মুনাফিকদের","খ্রিস্টানদের"],a:1},
+{q:"সূরা আল-কাহফ সম্পর্কে নিচের কোনটি সঠিক?",o:["এটি মদিনায় নাযিল হয়েছিল","এটি একটি মাক্কী সূরা এবং ১১০ আয়াত বিশিষ্ট","এতে ২০০ আয়াত আছে","এটি সর্বশেষ নাযিলকৃত সূরা"],a:1},
+{q:"আসহাবে কাহফের যুবকরা কোন এলাকার অধিবাসী ছিলেন বলে অধিকাংশ মুফাসসির উল্লেখ করেছেন?",o:["মক্কা","ইয়েমেন","রোমান সাম্রাজ্যের একটি শহর","মিশর"],a:2},
+{q:"আসহাবে কাহফের যুবকরা গুহায় প্রবেশের আগে আল্লাহর কাছে কী দোয়া করেছিলেন?",o:["সম্পদ চেয়েছিলেন","রহমত ও সঠিক পথের দিশা চেয়েছিলেন","ক্ষমতা চেয়েছিলেন","শত্রু বিনাশ চেয়েছিলেন"],a:1},
+{q:"গুহায় ঘুমন্ত অবস্থায় আল্লাহ তাদের শরীরের কী রক্ষা করেছিলেন বলে কুরআনে উল্লেখ আছে?",o:["তাদের পোশাক","তাদের শরীর পচন থেকে এবং তারা পাশ পরিবর্তন করত","তাদের সম্পদ","তাদের নাম-পরিচয়"],a:1},
+{q:"আসহাবে কাহফের কুকুরটি গুহার দরজায় কী অবস্থায় ছিল?",o:["দৌড়াচ্ছিল","সামনের পা ছড়িয়ে শুয়ে ছিল","ঘেউ ঘেউ করছিল","খাবার খাচ্ছিল"],a:1},
+{q:"দুই বাগানের মালিকের ঘটনায় বাগানের মাঝখানে কী ছিল?",o:["একটি পুকুর","একটি প্রবাহিত নদী/ঝরনা","একটি কুয়া","একটি পাহাড়"],a:1},
+{q:"ধনী ব্যক্তি তার সম্পদ ও বংশের ব্যাপারে কী মনে করত?",o:["এটি ক্ষণস্থায়ী","এটি আল্লাহর পরীক্ষা","নিজেকে অন্যদের চেয়ে শক্তিশালী মনে করত","এটি তার প্রাপ্য নয়"],a:2},
+{q:"দুই বাগানের ঘটনায় গরিব সঙ্গী আল্লাহর প্রতি কী মনোভাব পোষণ করতেন?",o:["অভিযোগ করতেন","তাওহীদ ও কৃতজ্ঞতার মনোভাব রাখতেন","হতাশ ছিলেন","আল্লাহকে দোষ দিতেন"],a:1},
+{q:"বাগান ধ্বংস হওয়ার পর ধনী ব্যক্তি কী আফসোস করেছিল?",o:["আল্লাহর সাথে কাউকে শরিক না করার আফসোস","অর্থ খরচ করার আফসোস","বন্ধুকে না বলার আফসোস","ভ্রমণে না যাওয়ার আফসোস"],a:0},
+{q:"মূসা (আ.) ও খিজির (আ.)-এর সাক্ষাৎ কোন স্থানে হয়েছিল বলে উল্লেখ আছে?",o:["মরুভূমিতে","দুই সাগরের মিলনস্থলে","পাহাড়ের চূড়ায়","একটি শহরের বাজারে"],a:1},
+{q:"মূসা (আ.)-এর সঙ্গে যাত্রায় কে ছিলেন?",o:["হারুন (আ.)","ইউশা বিন নুন (তাঁর সহকারী)","ইলিয়াস (আ.)","কোনো একজন সাহাবি"],a:1},
+{q:"মূসা (আ.) ও তার সঙ্গী পথে কী হারিয়ে ফেলেছিলেন, যা তাদের খিজির (আ.)-এর সাক্ষাৎস্থল চিনতে সাহায্য করেছিল?",o:["একটি তলোয়ার","একটি মাছ","একটি থলে","একটি লাঠি"],a:1},
+{q:"খিজির (আ.) মূসা (আ.)-কে প্রথমে কী বলেছিলেন যখন তিনি সঙ্গী হতে চাইলেন?",o:["সরাসরি রাজি হয়ে গেলেন","বললেন তুমি ধৈর্য ধরতে পারবে না","তাকে ফিরিয়ে দিলেন","শর্ত দিতে অস্বীকার করলেন"],a:1},
+{q:"নৌকার ঘটনায় খিজির (আ.)-এর কাজ দেখে মূসা (আ.) প্রথমে কী ভেবেছিলেন?",o:["এটি সঠিক কাজ","এটি যাত্রীদের ডুবিয়ে দেওয়ার চেষ্টা","এটি একটি খেলা","এটি প্রয়োজনীয় মেরামত"],a:1},
+{q:"তৃতীয় ঘটনায় যে গ্রামে তারা পৌঁছেছিলেন, সেখানকার মানুষ তাদের সাথে কেমন আচরণ করেছিল?",o:["তাদের সাদরে গ্রহণ করেছিল","তাদের আপ্যায়ন করতে অস্বীকার করেছিল","তাদের উপহার দিয়েছিল","তাদের পথ দেখিয়ে দিয়েছিল"],a:1},
+{q:"খিজির (আ.)-এর তিনটি কাজের ব্যাখ্যা দেওয়ার পর তিনি মূসা (আ.)-কে কী বলেছিলেন?",o:["আরও সঙ্গে থাকতে বললেন","এখানেই তাদের পথ আলাদা হয়ে যাবে","ফিরে যেতে বললেন","নতুন শর্ত দিলেন"],a:1},
+{q:"যুলকারনাইন শব্দের অর্থ সম্পর্কে অধিকাংশ মুফাসসিরের অভিমত কী?",o:["দুই শিংওয়ালা ব্যক্তি বা দুই যুগ/প্রান্তের অধিকারী শাসক","একজন নবী","একজন ফেরেশতা","একটি জাতির নাম"],a:0},
+{q:"যুলকারনাইনকে আল্লাহ কী দান করেছিলেন বলে কুরআনে উল্লেখ আছে?",o:["শুধু সম্পদ","পৃথিবীতে শক্তি ও পথ চলার উপায়/উপকরণ","শুধু সেনাবাহিনী","শুধু জ্ঞান"],a:1},
+{q:"পশ্চিমের জাতির ব্যাপারে যুলকারনাইন কী সিদ্ধান্ত নিয়েছিলেন?",o:["সবাইকে শাস্তি দিয়েছিলেন","অবিশ্বাসীদের শাস্তি ও বিশ্বাসীদের প্রতি দয়ার নীতি নিয়েছিলেন","সবাইকে ক্ষমা করেছিলেন","কোনো সিদ্ধান্ত নেননি"],a:1},
+{q:"ইয়াজুজ-মাজুজ কেমন জাতি ছিল বলে বর্ণিত হয়েছে?",o:["শান্তিপ্রিয় বণিক জাতি","পৃথিবীতে বিপর্যয় সৃষ্টিকারী জাতি","একটি ছোট গোত্র","একটি ধনী জাতি"],a:1},
+{q:"যুলকারনাইন প্রাচীর নির্মাণের পর কী বলেছিলেন?",o:["এটি আমার কৃতিত্ব","এটি আল্লাহর রহমত, কিয়ামতের আগে আল্লাহর হুকুমে এটি ভেঙে যাবে","এটি কখনো ভাঙবে না","এটি বিক্রি করা হবে"],a:1},
+{q:"সূরা আল-কাহফের কাহিনিগুলোতে সাধারণভাবে কোন বিষয়ের প্রতি গুরুত্ব দেওয়া হয়েছে?",o:["যুদ্ধবিদ্যা","তাওহীদ, সবর ও আল্লাহর উপর ভরসা","ব্যবসায়িক কৌশল","রাজনৈতিক ক্ষমতা অর্জন"],a:1},
+{q:"\"কাহফ\" শব্দের অর্থ কী?",o:["পাহাড়","গুহা","মরুভূমি","নদী"],a:1},
+{q:"সূরা আল-কাহফের প্রথম আয়াতে কাকে প্রশংসা করা হয়েছে?",o:["নবী মুহাম্মদ (ﷺ)-কে","আল্লাহ তাআলাকে, যিনি কুরআন নাযিল করেছেন","সাহাবাদের","ফেরেশতাদের"],a:1},
+{q:"সূরা আল-কাহফে কোন বিষয়ে কঠোর সতর্কবার্তা দেওয়া হয়েছে?",o:["যারা বলে আল্লাহর সন্তান আছে","যারা নামাজ পড়ে না","যারা ব্যবসা করে","যারা ভ্রমণ করে"],a:0},
+{q:"সূরা আল-কাহফে দুনিয়ার জীবনকে কীসের সাথে তুলনা করা হয়েছে?",o:["সমুদ্রের সাথে","বৃষ্টির পানিতে জন্মানো ফসলের সাথে যা পরে শুকিয়ে যায়","পাহাড়ের সাথে","আকাশের সাথে"],a:1},
+{q:"সূরা আল-কাহফে কিয়ামতের দিন আমলনামা সম্পর্কে কী বলা হয়েছে?",o:["আমলনামা থাকবে না","প্রতিটি কাজ লিপিবদ্ধ থাকবে, ছোট-বড় কিছুই বাদ যাবে না","শুধু বড় পাপ লেখা থাকবে","আমলনামা ধ্বংস হয়ে যাবে"],a:1},
+{q:"ইবলিস সম্পর্কে সূরা আল-কাহফে কী উল্লেখ আছে?",o:["সে ফেরেশতা ছিল ও আদমকে সিজদা করেছিল","সে জ্বিনদের অন্তর্ভুক্ত ছিল এবং আল্লাহর আদেশ অমান্য করেছিল","সে মানুষ ছিল","তার কোনো উল্লেখ নেই"],a:1},
+{q:"সূরা আল-কাহফে আদম (আ.)-এর সিজদার ঘটনায় কে অস্বীকার করেছিল?",o:["ফেরেশতারা","ইবলিস","জিন জাতি","মানুষ জাতি"],a:1},
+{q:"জুমার দিনে সূরা আল-কাহফ পাঠের ফজিলত হিসেবে যে নূরের কথা বলা হয়েছে, তা মূলত কোন উদ্দেশ্যে?",o:["শুধু পরিবারের জন্য","পাঠকারীর জন্য আলো ও কল্যাণ লাভের উদ্দেশ্যে","সম্পদ বৃদ্ধির জন্য","শুধু সম্মানের জন্য"],a:1},
+{q:"কুইজের প্রশ্নভাণ্ডার মূলত কোন উৎসের উপর ভিত্তি করে তৈরি?",o:["শুধু ইন্টারনেট থেকে","মারেফুল কুরআন তাফসির ও সহিহ হাদিসের উপর ভিত্তি করে","শুধু অনুমান থেকে","অন্য কোনো ভাষার বই থেকে"],a:1},
+];
+
+let qzIdx=0,qzScore=0,qzOrder=[];
+
+function shuffle(arr){
+  for(let i=arr.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [arr[i],arr[j]]=[arr[j],arr[i]];
+  }
+  return arr;
+}
+
+function quizStart(){
+  qzIdx=0;qzScore=0;
+  qzOrder=shuffle([...Array(QZ_QUESTIONS.length).keys()]);
+  document.getElementById('qz-intro').style.display='none';
+  document.getElementById('qz-result').style.display='none';
+  document.getElementById('qz-run').style.display='block';
+  renderQuestion();
+}
+
+function renderQuestion(){
+  const total=QZ_QUESTIONS.length;
+  const qd=QZ_QUESTIONS[qzOrder[qzIdx]];
+  document.getElementById('qzProg').textContent=`প্রশ্ন ${qzIdx+1}/${total}`;
+  document.getElementById('qzScore').textContent=`স্কোর: ${qzScore}`;
+  document.getElementById('qzBarIn').style.width=((qzIdx)/total*100)+'%';
+  document.getElementById('qzQ').textContent=`${qzIdx+1}. ${qd.q}`;
+
+  const optsEl=document.getElementById('qzOpts');
+  optsEl.innerHTML='';
+  const letters=['ক','খ','গ','ঘ'];
+  qd.o.forEach((opt,i)=>{
+    const div=document.createElement('div');
+    div.className='qz-opt';
+    div.innerHTML=`<span class="qmk">${letters[i]}</span><span>${opt}</span>`;
+    div.onclick=()=>selectOption(div,i,qd.a);
+    optsEl.appendChild(div);
+  });
+  document.getElementById('qzNext').classList.remove('show');
+  document.getElementById('qzNext').textContent = (qzIdx===total-1) ? 'রিজাল্ট দেখুন ➜' : 'পরবর্তী ➜';
+}
+
+function selectOption(el,idx,correctIdx){
+  const opts=document.querySelectorAll('#qzOpts .qz-opt');
+  if(opts[0].classList.contains('disabled'))return;
+  opts.forEach((o,i)=>{
+    o.classList.add('disabled');
+    if(i===correctIdx)o.classList.add('correct');
+    if(i===idx&&idx!==correctIdx)o.classList.add('wrong');
+  });
+  if(idx===correctIdx)qzScore++;
+  document.getElementById('qzScore').textContent=`স্কোর: ${qzScore}`;
+  document.getElementById('qzNext').classList.add('show');
+}
+
+function quizNext(){
+  qzIdx++;
+  if(qzIdx>=QZ_QUESTIONS.length){
+    showResult();
+    return;
+  }
+  renderQuestion();
+}
+
+function getRank(score,total){
+  const pct=score/total*100;
+  if(pct>=90)return{label:'🏆 কাহফ বিশেষজ্ঞ',msg:'আপনার জ্ঞান অসাধারণ! সূরা আল-কাহফ সম্পর্কে আপনার গভীর ধারণা রয়েছে। মাশাআল্লাহ!'};
+  if(pct>=75)return{label:'🌟 উন্নত স্তর',msg:'খুব ভালো ফলাফল! আরেকটু চর্চা করলে আপনি বিশেষজ্ঞ পর্যায়ে পৌঁছে যাবেন।'};
+  if(pct>=50)return{label:'📘 মধ্যম স্তর',msg:'ভালো শুরু! তাফসির ও ঘটনাসমূহ মডিউল আরেকবার পড়ে নিন, স্কোর আরও বাড়বে।'};
+  if(pct>=25)return{label:'🌱 শিক্ষানবিস',msg:'আপনি শেখা শুরু করেছেন — এটাই সবচেয়ে গুরুত্বপূর্ণ পদক্ষেপ। সূরা পড়া ও তাফসির মডিউল থেকে আরও শিখুন।'};
+  return{label:'📖 নতুন যাত্রা',msg:'চিন্তা করবেন না! প্রথমে সূরা পড়া, তাফসির ও ঘটনাসমূহ মডিউল ভালোভাবে পড়ুন, তারপর আবার চেষ্টা করুন।'};
+}
+
+function showResult(){
+  document.getElementById('qz-run').style.display='none';
+  document.getElementById('qz-result').style.display='block';
+  const total=QZ_QUESTIONS.length;
+  document.getElementById('resScore').textContent=qzScore;
+  document.querySelector('.rtotal').textContent='/ '+total;
+  const rank=getRank(qzScore,total);
+  document.getElementById('resRank').textContent=rank.label;
+  document.getElementById('resMsg').textContent=`আপনি ${total} টি প্রশ্নের মধ্যে ${qzScore} টি সঠিক উত্তর দিয়েছেন। ${rank.msg}`;
+  window.scrollTo(0,0);
+}
+
+function quizExit(){
+  document.getElementById('qz-intro').style.display='block';
+  document.getElementById('qz-run').style.display='none';
+  document.getElementById('qz-result').style.display='none';
+  goHome();
+}
+
+
+
+/* Keyboard */
+document.querySelectorAll('.card').forEach(c=>{
+  c.addEventListener('keydown',e=>{
+    if(e.key==='Enter'||e.key===' '){e.preventDefault();c.click()}
+  });
+});
+
+/* ===================== SHARE CARD ===================== */
+const SHR_QUOTES={
+  ayat:[
+    {ar:'الْحَمْدُ لِلَّهِ الَّذِي أَنزَلَ عَلَىٰ عَبْدِهِ الْكِتَابَ',bn:'সমস্ত প্রশংসা আল্লাহর, যিনি তাঁর বান্দার উপর এই কিতাব নাযিল করেছেন।',ref:'সূরা আল-কাহফ, আয়াত ১'},
+    {ar:'إِنَّا جَعَلْنَا مَا عَلَى الْأَرْضِ زِينَةً لَّهَا لِنَبْلُوَهُمْ',bn:'আমি পৃথিবীর উপরিভাগকে তার জন্য সৌন্দর্যমণ্ডিত করেছি, যাতে তাদের পরীক্ষা করতে পারি।',ref:'সূরা আল-কাহফ, আয়াত ৭'},
+    {ar:'وَكَانَ اللَّهُ عَلَىٰ كُلِّ شَيْءٍ مُّقْتَدِرًا',bn:'এবং আল্লাহ সবকিছুর উপর পূর্ণ ক্ষমতাশালী।',ref:'সূরা আল-কাহফ, আয়াত ৪৫'},
+    {ar:'إِنَّهُمْ فِتْيَةٌ آمَنُوا بِرَبِّهِمْ وَزِدْنَاهُمْ هُدًى',bn:'নিশ্চয়ই তারা ছিল কিছু যুবক, যারা তাদের রবের প্রতি ঈমান এনেছিল এবং আমি তাদের হেদায়েত আরও বাড়িয়ে দিয়েছিলাম।',ref:'সূরা আল-কাহফ, আয়াত ১৩'},
+    {ar:'وَلَا تَقُولَنَّ لِشَيْءٍ إِنِّي فَاعِلٌ ذَٰلِكَ غَدًا ۝ إِلَّا أَن يَشَاءَ اللَّهُ',bn:'কোনো কিছু সম্পর্কে কখনো বলো না — আমি তা আগামীকাল করব, তবে আল্লাহ চাইলে — এই কথা ছাড়া।',ref:'সূরা আল-কাহফ, আয়াত ২৩–২৪'},
+    {ar:'الْمَالُ وَالْبَنُونَ زِينَةُ الْحَيَاةِ الدُّنْيَا',bn:'সম্পদ ও সন্তান-সন্ততি দুনিয়ার জীবনের সৌন্দর্য মাত্র।',ref:'সূরা আল-কাহফ, আয়াত ৪৬'},
+    {ar:'وَقُلِ الْحَقُّ مِن رَّبِّكُمْ ۖ فَمَن شَاءَ فَلْيُؤْمِن وَمَن شَاءَ فَلْيَكْفُرْ',bn:'বলুন — সত্য তোমাদের রবের পক্ষ থেকে এসেছে। যে চায় ঈমান আনুক, আর যে চায় অস্বীকার করুক।',ref:'সূরা আল-কাহফ, আয়াত ২৯'},
+    {ar:'إِنَّ الَّذِينَ آمَنُوا وَعَمِلُوا الصَّالِحَاتِ كَانَتْ لَهُمْ جَنَّاتُ الْفِرْدَوْسِ نُزُلًا',bn:'নিশ্চয়ই যারা ঈমান এনেছে ও সৎকাজ করেছে, তাদের জন্য জান্নাতুল ফেরদাউস তাদের আতিথেয়তার জায়গা।',ref:'সূরা আল-কাহফ, আয়াত ১০৭'},
+  ],
+  lesson:[
+    {ar:'',bn:'ঈমানের পরীক্ষায় উত্তীর্ণ হতে হলে পরিবেশ ও সমাজের চাপের বিরুদ্ধে দৃঢ় থাকতে হবে — ঠিক যেমন আসহাবে কাহফের যুবকরা ছিলেন।',ref:'শিক্ষা — আসহাবে কাহফ'},
+    {ar:'',bn:'সম্পদ ও সাফল্য আল্লাহর দান। অহংকার না করে কৃতজ্ঞ থাকলে তা বরকতময় হয় — দুই বাগানের মালিকের ঘটনা থেকে শিক্ষা।',ref:'শিক্ষা — দুই বাগানের ঘটনা'},
+    {ar:'',bn:'আমাদের জ্ঞান সীমিত, আল্লাহর জ্ঞান অসীম। ধৈর্য ও বিনয়ের সাথে শেখার মানসিকতা রাখুন — মূসা (আ.) ও খিজির (আ.)-এর কাহিনি থেকে শিক্ষা।',ref:'শিক্ষা — মূসা ও খিজির (আ.)'},
+    {ar:'',bn:'ক্ষমতা ও নেতৃত্ব পেলে তা মানুষের কল্যাণে ব্যবহার করুন, অহংকারের জন্য নয় — যুলকারনাইনের আদর্শ থেকে শিক্ষা।',ref:'শিক্ষা — যুলকারনাইন'},
+    {ar:'',bn:'দুনিয়ার জীবন ক্ষণস্থায়ী — যেমন বৃষ্টির পানিতে ফসল জন্মায়, তারপর শুকিয়ে যায়। আখিরাতের জন্য প্রস্তুতি নিন।',ref:'সূরা আল-কাহফ — জীবনের সত্য'},
+    {ar:'',bn:'আল্লাহর উপর ভরসা রাখলে তিনি অপ্রত্যাশিত উপায়ে সাহায্য করেন — আসহাবে কাহফের ঘটনা তার প্রমাণ।',ref:'সূরা আল-কাহফ — তাওয়াক্কুলের শিক্ষা'},
+  ],
+  fazilat:[
+    {ar:'',bn:'যে ব্যক্তি জুমার দিনে সূরা আল-কাহফ তিলাওয়াত করবে, তার জন্য দুই জুমার মধ্যবর্তী সময়ে নূর প্রকাশিত হবে।',ref:'হাদিস — সুনানে দারেমি'},
+    {ar:'',bn:'যে দাজ্জালের সাক্ষাৎ পাবে, সে যেন সূরা আল-কাহফের প্রথম আয়াতগুলো পাঠ করে — কারণ এটি দাজ্জালের ফিতনা থেকে রক্ষাকারী।',ref:'হাদিস — সহিহ মুসলিম'},
+    {ar:'',bn:'প্রতি জুমার দিন সূরা আল-কাহফ তিলাওয়াত করুন — এটি একটি অত্যন্ত ফজিলতপূর্ণ আমল। মাশাআল্লাহ!',ref:'সূরা আল-কাহফ — ফজিলত'},
+  ]
+};
+
+/* Background themes — drawn with canvas gradients + geometric patterns */
+const SHR_BGTYPES=[
+  {id:'dark_gold',label:'সোনালী',c1:'#0a2416',c2:'#0f3d2a',acc:'#c8a84b'},
+  {id:'teal_cream',label:'সবুজ',c1:'#134e37',c2:'#1a6b4a',acc:'#f0d98a'},
+  {id:'deep_blue',label:'নীল',c1:'#0d1f3a',c2:'#163560',acc:'#c8a84b'},
+  {id:'royal_purple',label:'বেগুনি',c1:'#1a0a2e',c2:'#2d1260',acc:'#c8a84b'},
+  {id:'warm_maroon',label:'মেরুন',c1:'#2a0a0a',c2:'#5a1a1a',acc:'#f0d98a'},
+  {id:'midnight',label:'রাত',c1:'#050a08',c2:'#0a1812',acc:'#c8a84b'},
+];
+
+let shrCurCat='ayat';
+let shrSelIdx=0;
+let shrSelBg=0;
+
+function shrInit(){
+  /* build bg swatches */
+  const row=document.getElementById('shrBgRow');
+  row.innerHTML='';
+  SHR_BGTYPES.forEach((bg,i)=>{
+    const d=document.createElement('div');
+    d.className='shr-bg-opt'+(i===0?' sel':'');
+    d.style.background=`linear-gradient(135deg,${bg.c1},${bg.c2})`;
+    d.title=bg.label;
+    d.onclick=()=>{
+      shrSelBg=i;
+      document.querySelectorAll('.shr-bg-opt').forEach((x,j)=>x.classList.toggle('sel',j===i));
+      shrDraw();
+    };
+    row.appendChild(d);
+  });
+  shrRenderList();
+  shrDraw();
+}
+
+function shrSwitchCat(el){
+  document.querySelectorAll('.shr-tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  shrCurCat=el.dataset.cat;
+  shrSelIdx=0;
+  shrRenderList();
+  shrDraw();
+}
+
+function shrRenderList(){
+  const list=document.getElementById('shrQuoteList');
+  const items=SHR_QUOTES[shrCurCat];
+  list.innerHTML='';
+  items.forEach((q,i)=>{
+    const d=document.createElement('div');
+    d.className='shr-q-item'+(i===shrSelIdx?' sel':'');
+    let inner='';
+    if(q.ar) inner+=`<div class="qar">${q.ar}</div>`;
+    inner+=`<div class="qbn">${q.bn}</div>`;
+    inner+=`<div class="qref">${q.ref}</div>`;
+    d.innerHTML=inner;
+    d.onclick=()=>{
+      shrSelIdx=i;
+      document.querySelectorAll('.shr-q-item').forEach((x,j)=>x.classList.toggle('sel',j===i));
+      shrDraw();
+    };
+    list.appendChild(d);
+  });
+}
+
+function shrDraw(){
+  const canvas=document.getElementById('shrCanvas');
+  const ctx=canvas.getContext('2d');
+  const W=600,H=600;
+  const bg=SHR_BGTYPES[shrSelBg];
+  const quote=SHR_QUOTES[shrCurCat][shrSelIdx];
+
+  /* Background gradient */
+  const grad=ctx.createLinearGradient(0,0,W,H);
+  grad.addColorStop(0,bg.c1);
+  grad.addColorStop(1,bg.c2);
+  ctx.fillStyle=grad;
+  ctx.fillRect(0,0,W,H);
+
+  /* Geometric Islamic-style mandala border pattern */
+  ctx.save();
+  ctx.strokeStyle=bg.acc;
+  ctx.lineWidth=1.2;
+  ctx.globalAlpha=0.18;
+  for(let r=30;r<320;r+=28){
+    ctx.beginPath();
+    for(let a=0;a<8;a++){
+      const angle=(a/8)*Math.PI*2;
+      const x=W/2+Math.cos(angle)*r;
+      const y=H/2+Math.sin(angle)*r;
+      a===0?ctx.moveTo(x,y):ctx.lineTo(x,y);
+    }
+    ctx.closePath();
+    ctx.stroke();
+  }
+  ctx.globalAlpha=1;
+  ctx.restore();
+
+  /* Corner decorative arcs */
+  ctx.save();
+  ctx.strokeStyle=bg.acc;
+  ctx.lineWidth=1.5;
+  ctx.globalAlpha=0.3;
+  [[0,0],[W,0],[0,H],[W,H]].forEach(([cx,cy])=>{
+    ctx.beginPath();
+    ctx.arc(cx,cy,60,0,Math.PI*2);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.arc(cx,cy,90,0,Math.PI*2);
+    ctx.stroke();
+  });
+  ctx.globalAlpha=1;
+  ctx.restore();
+
+  /* Gold border frame */
+  const bm=18;
+  ctx.strokeStyle=bg.acc;
+  ctx.lineWidth=2.5;
+  ctx.strokeRect(bm,bm,W-bm*2,H-bm*2);
+  ctx.lineWidth=0.8;
+  ctx.globalAlpha=0.5;
+  ctx.strokeRect(bm+5,bm+5,W-bm*2-10,H-bm*2-10);
+  ctx.globalAlpha=1;
+
+  /* Corner diamond ornaments */
+  ctx.fillStyle=bg.acc;
+  [[bm,bm],[W-bm,bm],[bm,H-bm],[W-bm,H-bm]].forEach(([x,y])=>{
+    ctx.save();ctx.translate(x,y);ctx.rotate(Math.PI/4);
+    ctx.fillRect(-5,-5,10,10);ctx.restore();
+  });
+
+  /* Top label: بِسْمِ اللهِ */
+  ctx.fillStyle=bg.acc;
+  ctx.font='bold 20px serif';
+  ctx.textAlign='center';
+  ctx.fillText('بِسْمِ اللهِ الرَّحْمٰنِ الرَّحِيمِ', W/2, 72);
+
+  /* Decorative divider below bismillah */
+  const dY=88;
+  ctx.strokeStyle=bg.acc;
+  ctx.lineWidth=1;
+  ctx.globalAlpha=0.6;
+  ctx.beginPath();ctx.moveTo(W/2-100,dY);ctx.lineTo(W/2+100,dY);ctx.stroke();
+  ctx.globalAlpha=1;
+
+  /* Arabic ayat text (if present) */
+  let bodyY=quote.ar ? 160 : 200;
+  if(quote.ar){
+    ctx.fillStyle='#ffffff';
+    ctx.font='bold 22px serif';
+    ctx.textAlign='center';
+    const arLines=wrapText(ctx,quote.ar,W-80,22);
+    arLines.forEach((line,i)=>{
+      ctx.fillText(line,W/2,bodyY+i*36);
+    });
+    bodyY+=arLines.length*36+24;
+
+    /* small gold line separator */
+    ctx.strokeStyle=bg.acc;
+    ctx.lineWidth=1;
+    ctx.globalAlpha=0.5;
+    ctx.beginPath();ctx.moveTo(W/2-60,bodyY-8);ctx.lineTo(W/2+60,bodyY-8);ctx.stroke();
+    ctx.globalAlpha=1;
+    bodyY+=10;
+  }
+
+  /* Bangla translation / lesson text */
+  ctx.fillStyle='#e8f5eb';
+  ctx.font=`${quote.ar ? '17' : '19'}px 'Segoe UI',Arial,sans-serif`;
+  ctx.textAlign='center';
+  const bnLines=wrapText(ctx,quote.bn,W-90,quote.ar?17:19);
+  bnLines.forEach((line,i)=>{
+    ctx.fillText(line,W/2,bodyY+i*32);
+  });
+  bodyY+=bnLines.length*32+20;
+
+  /* Reference label */
+  ctx.fillStyle=bg.acc;
+  ctx.font='bold 14px Arial,sans-serif';
+  ctx.textAlign='center';
+  ctx.fillText('— '+quote.ref+' —',W/2,bodyY+4);
+
+  /* Bottom watermark */
+  ctx.fillStyle='rgba(255,255,255,0.35)';
+  ctx.font='12px Arial,sans-serif';
+  ctx.textAlign='center';
+  ctx.fillText('সূরা আল-কাহফ লার্নিং অ্যাপ', W/2, H-32);
+  ctx.fillStyle=bg.acc;
+  ctx.fillText('📖 মারেফুল কুরআন ভিত্তিক', W/2, H-14);
+}
+
+function wrapText(ctx,text,maxW,fontSize){
+  const words=text.split(' ');
+  const lines=[];
+  let cur='';
+  words.forEach(w=>{
+    const test=cur?cur+' '+w:w;
+    if(ctx.measureText(test).width>maxW && cur){
+      lines.push(cur);
+      cur=w;
+    } else {
+      cur=test;
+    }
+  });
+  if(cur) lines.push(cur);
+  return lines;
+}
+
+function shrDownload(){
+  const canvas=document.getElementById('shrCanvas');
+  const quote=SHR_QUOTES[shrCurCat][shrSelIdx];
+  const a=document.createElement('a');
+  a.download='surah-kahf-card.png';
+  a.href=canvas.toDataURL('image/png');
+  a.click();
+}
+
+function shrShare(platform){
+  /* Download first, then open platform */
+  shrDownload();
+  const quote=SHR_QUOTES[shrCurCat][shrSelIdx];
+  const text=encodeURIComponent(quote.bn+'\n— '+quote.ref+'\nসূরা আল-কাহফ লার্নিং অ্যাপ');
+  setTimeout(()=>{
+    if(platform==='facebook'){
+      window.open('https://www.facebook.com/sharer/sharer.php?u=https://quran.com/18','_blank');
+    } else {
+      window.open('https://wa.me/?text='+text,'_blank');
+    }
+  },400);
+}
+
+/* Init share when page opens */
+function goTo(s){
+  if(READY.includes(s)){
+    document.getElementById('home').classList.remove('active');
+    document.getElementById(s).classList.add('active');
+    window.scrollTo(0,0);
+    if(s==='share') shrInit();
+    return;
+  }
+  const names={
+    surah:'সূরা পড়া',tafsir:'তাফসির',shane:'শানে নুজুল',
+    period:'নাজিলের সময়কাল',lessons:'শিক্ষা',
+    stories:'বিভিন্ন ঘটনা',fazilat:'ফজিলত',quiz:'কুইজ',share:'শেয়ার কার্ড'
+  };
+  alert('🔜 শীঘ্রই আসছে:\n' + (names[s]||s));
+}
+
+/* Keyboard */
+document.querySelectorAll('.card').forEach(c=>{
+  c.addEventListener('keydown',e=>{
+    if(e.key==='Enter'||e.key===' '){e.preventDefault();c.click()}
+  });
+});
+
+</script>
+</body>
+</html>
